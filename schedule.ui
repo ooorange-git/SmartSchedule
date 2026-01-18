@@ -19,7 +19,8 @@
    <string>Form</string>
   </property>
   <property name="windowIcon">
-   <iconset theme="QIcon::ThemeIcon::DialogInformation"/>
+   <iconset resource="icon.qrc">
+    <normaloff>:/icon/icon2.png</normaloff>:/icon/icon2.png</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
@@ -138,6 +139,8 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="icon.qrc"/>
+ </resources>
  <connections/>
 </ui>

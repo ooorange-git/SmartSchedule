@@ -118,7 +118,7 @@ public:
             MainWindow->setObjectName("MainWindow");
         MainWindow->resize(623, 638);
         QIcon icon;
-        icon.addFile(QString::fromUtf8(":/icon/icon.png"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
+        icon.addFile(QString::fromUtf8(":/icon/icon1.png"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
         MainWindow->setWindowIcon(icon);
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName("centralwidget");
