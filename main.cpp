@@ -21,6 +21,7 @@ int main(int argc, char *argv[])
     int y = (screenGeometry.height()-419)/2;
     Schedule s;
     s.move(x,y);
+    s.SetMain(&w);
     s.show();
     w.show();
     return a.exec();

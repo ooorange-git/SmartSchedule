@@ -62,7 +62,7 @@ void Schedule::createContextMenu()
     QAction *action3 = contextMenu->addAction("退出");
     connect(action1, &QAction::triggered, this, &Schedule::onMainWindow);
     connect(action2, &QAction::triggered, this, &Schedule::onUpdate);
-    connect(action3, &QAction::triggered, this, &QWidget::close);
+    connect(action3, &QAction::triggered, this, &Schedule::onQuit);
 }
 
 void Schedule::showContextMenu(const QPoint &pos)
@@ -74,8 +74,18 @@ void Schedule::onUpdate(){
     qDebug()<<"a";
 }
 
+void Schedule::onQuit(){
+    qApp->quit();
+}
+
 void Schedule::onMainWindow(){
-    qDebug()<<"a";
+    if (m_mainwindow->isMinimized())
+        m_mainwindow->showNormal();  // 从最小化恢复
+    else
+        m_mainwindow->show();
+    m_mainwindow->raise();
+    m_mainwindow->activateWindow();
+
 }
 
 Schedule::~Schedule()
