@@ -1,11 +1,12 @@
 #ifndef SCHEDULE_H
 #define SCHEDULE_H
 
-#include "mainwindow.h"
 #include <QWidget>
 #include <QAction>
 #include <QMenu>
 #include <QPoint>
+
+class MainWindow;
 
 namespace Ui {
 class Schedule;
@@ -18,6 +19,8 @@ class Schedule : public QWidget
 public:
     explicit Schedule(QWidget *parent = nullptr);
     ~Schedule();
+    void updateLabel();
+    void startDailyTimer();
     void SetMain(MainWindow *w){ m_mainwindow=w; };
 
 private slots:
@@ -28,6 +31,7 @@ private slots:
 
 private:
     Ui::Schedule *ui;
+
     QMenu *contextMenu=nullptr;
     void createContextMenu();
     MainWindow *m_mainwindow;

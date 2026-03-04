@@ -23,6 +23,7 @@ int main(int argc, char *argv[])
     s.move(x,y);
     s.SetMain(&w);
     s.show();
+    w.setSchedule(&s);
     w.show();
     return a.exec();
 }

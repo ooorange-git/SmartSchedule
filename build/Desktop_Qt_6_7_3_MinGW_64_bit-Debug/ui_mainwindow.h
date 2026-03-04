@@ -13,6 +13,7 @@
 #include <QtGui/QIcon>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QCheckBox>
+#include <QtWidgets/QComboBox>
 #include <QtWidgets/QFrame>
 #include <QtWidgets/QGroupBox>
 #include <QtWidgets/QLabel>
@@ -104,13 +105,14 @@ public:
     QLabel *label_21;
     QGroupBox *groupBox_2;
     QCheckBox *RightClockB;
-    QCheckBox *LeftClockB;
     QSpinBox *spinBox;
     QCheckBox *TurnOn;
     QLabel *label_2;
     QPushButton *aboutButton;
     QCheckBox *checkBox;
     QLabel *label;
+    QComboBox *day;
+    QLabel *label_3;
 
     void setupUi(QMainWindow *MainWindow)
     {
@@ -406,13 +408,9 @@ public:
         RightClockB->setObjectName("RightClockB");
         RightClockB->setGeometry(QRect(360, 50, 146, 25));
         RightClockB->setFont(font1);
-        LeftClockB = new QCheckBox(groupBox_2);
-        LeftClockB->setObjectName("LeftClockB");
-        LeftClockB->setGeometry(QRect(360, 103, 146, 25));
-        LeftClockB->setFont(font1);
         spinBox = new QSpinBox(groupBox_2);
         spinBox->setObjectName("spinBox");
-        spinBox->setGeometry(QRect(190, 103, 61, 29));
+        spinBox->setGeometry(QRect(190, 101, 61, 29));
         QFont font2;
         font2.setPointSize(11);
         spinBox->setFont(font2);
@@ -442,16 +440,30 @@ public:
         checkBox = new QCheckBox(groupBox_2);
         checkBox->setObjectName("checkBox");
         checkBox->setEnabled(false);
-        checkBox->setGeometry(QRect(360, 156, 211, 23));
+        checkBox->setGeometry(QRect(360, 110, 211, 23));
         checkBox->setFont(font1);
         checkBox->setTristate(false);
         label = new QLabel(groupBox_2);
         label->setObjectName("label");
         label->setEnabled(false);
-        label->setGeometry(QRect(360, 180, 141, 19));
+        label->setGeometry(QRect(360, 130, 141, 19));
         QFont font5;
         font5.setPointSize(8);
         label->setFont(font5);
+        day = new QComboBox(groupBox_2);
+        day->addItem(QString());
+        day->addItem(QString());
+        day->addItem(QString());
+        day->addItem(QString());
+        day->addItem(QString());
+        day->addItem(QString());
+        day->setObjectName("day");
+        day->setGeometry(QRect(480, 160, 83, 25));
+        day->setFont(font1);
+        label_3 = new QLabel(groupBox_2);
+        label_3->setObjectName("label_3");
+        label_3->setGeometry(QRect(360, 162, 111, 21));
+        label_3->setFont(font1);
         MainWindow->setCentralWidget(centralwidget);
         QWidget::setTabOrder(L11, L12);
         QWidget::setTabOrder(L12, L13);
@@ -495,8 +507,7 @@ public:
         QWidget::setTabOrder(L58, TurnOn);
         QWidget::setTabOrder(TurnOn, RightClockB);
         QWidget::setTabOrder(RightClockB, spinBox);
-        QWidget::setTabOrder(spinBox, LeftClockB);
-        QWidget::setTabOrder(LeftClockB, aboutButton);
+        QWidget::setTabOrder(spinBox, aboutButton);
 
         retranslateUi(MainWindow);
 
@@ -527,12 +538,19 @@ public:
         label_21->setText(QCoreApplication::translate("MainWindow", "\347\254\254\345\205\253\350\212\202", nullptr));
         groupBox_2->setTitle(QCoreApplication::translate("MainWindow", "\350\256\276\347\275\256", nullptr));
         RightClockB->setText(QCoreApplication::translate("MainWindow", "\346\230\276\347\244\272\345\217\263\344\270\213\350\247\222\346\227\266\351\222\237", nullptr));
-        LeftClockB->setText(QCoreApplication::translate("MainWindow", "\346\230\276\347\244\272\345\267\246\344\270\213\350\247\222\346\227\266\351\222\237", nullptr));
         TurnOn->setText(QCoreApplication::translate("MainWindow", "\345\274\200\346\234\272\350\207\252\345\220\257\345\212\250", nullptr));
         label_2->setText(QCoreApplication::translate("MainWindow", "\346\227\266\351\222\237\351\200\217\346\230\216\345\272\246\357\274\210%\357\274\211", nullptr));
         aboutButton->setText(QCoreApplication::translate("MainWindow", "\345\205\263\344\272\216", nullptr));
         checkBox->setText(QCoreApplication::translate("MainWindow", "\351\253\230\347\272\247\346\235\220\350\264\250", nullptr));
         label->setText(QCoreApplication::translate("MainWindow", "\345\217\257\350\203\275\345\270\246\346\235\245\346\233\264\345\244\232\350\265\204\346\272\220\346\266\210\350\200\227", nullptr));
+        day->setItemText(0, QCoreApplication::translate("MainWindow", "\350\207\252\345\212\250", nullptr));
+        day->setItemText(1, QCoreApplication::translate("MainWindow", "1", nullptr));
+        day->setItemText(2, QCoreApplication::translate("MainWindow", "2", nullptr));
+        day->setItemText(3, QCoreApplication::translate("MainWindow", "3", nullptr));
+        day->setItemText(4, QCoreApplication::translate("MainWindow", "4", nullptr));
+        day->setItemText(5, QCoreApplication::translate("MainWindow", "5", nullptr));
+
+        label_3->setText(QCoreApplication::translate("MainWindow", "\344\273\212\346\227\245\344\270\212\345\221\250?\347\232\204\350\257\276", nullptr));
     } // retranslateUi
 
 };

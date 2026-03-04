@@ -1,7 +1,11 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+
 #include <QMainWindow>
+
+
+class Schedule;
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -15,6 +19,8 @@ class MainWindow : public QMainWindow
 
 public:
     MainWindow(QWidget *parent = nullptr);
+    static int goodDay();
+    void setSchedule(Schedule *s) { m_s = s; }
     ~MainWindow();
 
 
@@ -23,8 +29,6 @@ public slots:
 
 
 private slots:
-    void on_LeftClockB_clicked(bool checked);
-
     void on_RightClockB_clicked(bool checked);
 
     void on_spinBox_valueChanged(int arg1);
@@ -113,7 +117,11 @@ private slots:
 
     void on_checkBox_clicked(bool checked);
 
+
+    void on_day_currentTextChanged(const QString &arg1);
+
 private:
+    Schedule *m_s;
     Ui::MainWindow *ui;
 };
 

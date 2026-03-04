@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "schedule.h"
 #include<QMessageBox>
 #include<QFile>
 #include<QTextStream>
@@ -10,7 +11,33 @@
 #include<QScreen>
 #include<QRect>
 #include<QLineEdit>
+#include<QDate>
 
+int MainWindow::goodDay(){
+    QFile file("config/day");
+    file.open(QIODevice::ReadOnly | QIODevice::Text);
+    QTextStream in(&file);
+    QString dayInFile=in.readAll();//文件中设置的星期
+
+    QFile file2("config/dayCheck");
+    file2.open(QIODevice::ReadOnly | QIODevice::Text);
+    QTextStream in2(&file2);
+    int checkInFile=in2.readAll().toInt();
+
+    QDate date=QDate::currentDate();
+    int cD=date.toString("yyyyMMdd").toInt();
+
+    if(dayInFile=="自动"){
+        return date.dayOfWeek();
+    }else{
+        if(cD==checkInFile){
+            qDebug()<<91;
+            return dayInFile.toInt();
+        }else{
+            return date.dayOfWeek();
+        }
+    }
+}
 
 void turnOn(bool is){
     QString name = QCoreApplication::applicationName();
@@ -87,13 +114,16 @@ MainWindow::MainWindow(QWidget *parent)
     file.setFileName("config/TurnOn");
     SetCheckboxState(file,turnOn);
 
-    QCheckBox *LC = ui->LeftClockB;
-    file.setFileName("config/LeftClock");
-    SetCheckboxState(file,LC);
-
     QCheckBox *RC = ui->RightClockB;
     file.setFileName("config/RightClock");
     SetCheckboxState(file,RC);
+
+    QComboBox *day = ui->day;
+    if(MainWindow::goodDay()==QDate::currentDate().dayOfWeek()){
+        day->setCurrentText("自动");
+    }else{
+        day->setCurrentIndex(goodDay());
+    }
 
     QCheckBox *bl = ui->checkBox;
     file.setFileName("config/blur");
@@ -288,26 +318,6 @@ void MainWindow::on_TurnOn_clicked(bool checked)
         }
         file.close();
         QMessageBox::information(this,"设置成功","设置成功，重启程序生效");
-    }
-    else{
-        QMessageBox::warning(this,"错误","设置失败，请检查程序所在的驱动器是否有充足的空间后重试");
-    }
-}
-
-
-void MainWindow::on_LeftClockB_clicked(bool checked)
-{
-
-    QFile file("config/LeftClock");
-    if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        QTextStream out(&file);
-        if(checked){
-            out << 1;
-        }else{
-            out << 0;
-        }
-
-        file.close();
     }
     else{
         QMessageBox::warning(this,"错误","设置失败，请检查程序所在的驱动器是否有充足的空间后重试");
@@ -602,3 +612,29 @@ void MainWindow::on_checkBox_clicked(bool checked)
         QMessageBox::warning(this,"错误","设置失败，请检查程序所在的驱动器是否有充足的空间后重试");
     }
 }
+
+
+void MainWindow::on_day_currentTextChanged(const QString &arg1)
+{
+    QFile file1("config/day");
+    QFile file2("config/dayCheck");
+    QDate currentDate = QDate::currentDate();
+    if (file1.open(QIODevice::WriteOnly | QIODevice::Text)){
+        QTextStream out(&file1);
+        out<<arg1;
+        file1.close();
+        if (file2.open(QIODevice::WriteOnly | QIODevice::Text)){
+            QTextStream out(&file2);
+            out<<currentDate.toString("yyyyMMdd");
+            file2.close();
+        }
+        else{
+            QMessageBox::warning(this,"错误","设置失败，请检查程序所在的驱动器是否有充足的空间后重试");
+        }
+    }
+    else{
+        QMessageBox::warning(this,"错误","设置失败，请检查程序所在的驱动器是否有充足的空间后重试");
+    }
+    m_s->updateLabel();
+}
+
