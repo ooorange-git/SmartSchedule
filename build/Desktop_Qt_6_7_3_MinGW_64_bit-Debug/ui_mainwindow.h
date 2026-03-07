@@ -30,12 +30,7 @@ class Ui_MainWindow
 public:
     QWidget *centralwidget;
     QGroupBox *groupBox;
-    QFrame *line;
     QFrame *line_3;
-    QFrame *line_5;
-    QFrame *line_6;
-    QFrame *line_7;
-    QFrame *line_8;
     QLabel *label_4;
     QLabel *label_5;
     QLabel *label_6;
@@ -53,7 +48,6 @@ public:
     QLineEdit *L12;
     QLineEdit *L13;
     QLineEdit *L14;
-    QLabel *label_9;
     QLineEdit *L15;
     QLineEdit *L17;
     QLineEdit *L16;
@@ -64,7 +58,6 @@ public:
     QLineEdit *L27;
     QLineEdit *L21;
     QLineEdit *L22;
-    QLabel *label_10;
     QLineEdit *L28;
     QLineEdit *L24;
     QLineEdit *L36;
@@ -84,13 +77,11 @@ public:
     QLineEdit *L41;
     QLineEdit *L42;
     QLineEdit *L45;
-    QLabel *label_12;
     QLineEdit *L56;
     QLineEdit *L53;
     QLineEdit *L55;
     QLineEdit *L58;
     QLineEdit *L51;
-    QLabel *label_13;
     QLineEdit *L52;
     QLineEdit *L54;
     QLineEdit *L57;
@@ -131,36 +122,11 @@ public:
         QFont font;
         font.setPointSize(14);
         groupBox->setFont(font);
-        line = new QFrame(groupBox);
-        line->setObjectName("line");
-        line->setGeometry(QRect(80, 20, 20, 351));
-        line->setFrameShape(QFrame::Shape::VLine);
-        line->setFrameShadow(QFrame::Shadow::Sunken);
         line_3 = new QFrame(groupBox);
         line_3->setObjectName("line_3");
         line_3->setGeometry(QRect(0, 60, 581, 20));
         line_3->setFrameShape(QFrame::Shape::HLine);
         line_3->setFrameShadow(QFrame::Shadow::Sunken);
-        line_5 = new QFrame(groupBox);
-        line_5->setObjectName("line_5");
-        line_5->setGeometry(QRect(170, 20, 20, 351));
-        line_5->setFrameShape(QFrame::Shape::VLine);
-        line_5->setFrameShadow(QFrame::Shadow::Sunken);
-        line_6 = new QFrame(groupBox);
-        line_6->setObjectName("line_6");
-        line_6->setGeometry(QRect(270, 20, 20, 351));
-        line_6->setFrameShape(QFrame::Shape::VLine);
-        line_6->setFrameShadow(QFrame::Shadow::Sunken);
-        line_7 = new QFrame(groupBox);
-        line_7->setObjectName("line_7");
-        line_7->setGeometry(QRect(370, 20, 20, 351));
-        line_7->setFrameShape(QFrame::Shape::VLine);
-        line_7->setFrameShadow(QFrame::Shadow::Sunken);
-        line_8 = new QFrame(groupBox);
-        line_8->setObjectName("line_8");
-        line_8->setGeometry(QRect(470, 20, 20, 351));
-        line_8->setFrameShape(QFrame::Shape::VLine);
-        line_8->setFrameShadow(QFrame::Shadow::Sunken);
         label_4 = new QLabel(groupBox);
         label_4->setObjectName("label_4");
         label_4->setGeometry(QRect(110, 40, 69, 19));
@@ -235,10 +201,6 @@ public:
         L14 = new QLineEdit(groupBox);
         L14->setObjectName("L14");
         L14->setGeometry(QRect(93, 192, 81, 25));
-        label_9 = new QLabel(groupBox);
-        label_9->setObjectName("label_9");
-        label_9->setGeometry(QRect(115, 225, 41, 19));
-        label_9->setFont(font1);
         L15 = new QLineEdit(groupBox);
         L15->setObjectName("L15");
         L15->setGeometry(QRect(93, 252, 81, 25));
@@ -269,10 +231,6 @@ public:
         L22 = new QLineEdit(groupBox);
         L22->setObjectName("L22");
         L22->setGeometry(QRect(190, 120, 81, 25));
-        label_10 = new QLabel(groupBox);
-        label_10->setObjectName("label_10");
-        label_10->setGeometry(QRect(213, 225, 41, 19));
-        label_10->setFont(font1);
         L28 = new QLineEdit(groupBox);
         L28->setObjectName("L28");
         L28->setGeometry(QRect(190, 342, 81, 25));
@@ -296,7 +254,7 @@ public:
         L33->setGeometry(QRect(290, 157, 81, 25));
         label_11 = new QLabel(groupBox);
         label_11->setObjectName("label_11");
-        label_11->setGeometry(QRect(313, 225, 41, 19));
+        label_11->setGeometry(QRect(270, 225, 41, 19));
         label_11->setFont(font1);
         L34 = new QLineEdit(groupBox);
         L34->setObjectName("L34");
@@ -331,10 +289,6 @@ public:
         L45 = new QLineEdit(groupBox);
         L45->setObjectName("L45");
         L45->setGeometry(QRect(390, 252, 81, 25));
-        label_12 = new QLabel(groupBox);
-        label_12->setObjectName("label_12");
-        label_12->setGeometry(QRect(415, 225, 41, 19));
-        label_12->setFont(font1);
         L56 = new QLineEdit(groupBox);
         L56->setObjectName("L56");
         L56->setGeometry(QRect(490, 280, 81, 25));
@@ -350,10 +304,6 @@ public:
         L51 = new QLineEdit(groupBox);
         L51->setObjectName("L51");
         L51->setGeometry(QRect(490, 80, 81, 25));
-        label_13 = new QLabel(groupBox);
-        label_13->setObjectName("label_13");
-        label_13->setGeometry(QRect(515, 225, 41, 19));
-        label_13->setFont(font1);
         L52 = new QLineEdit(groupBox);
         L52->setObjectName("L52");
         L52->setGeometry(QRect(490, 120, 81, 25));
@@ -457,6 +407,7 @@ public:
         day->addItem(QString());
         day->addItem(QString());
         day->addItem(QString());
+        day->addItem(QString());
         day->setObjectName("day");
         day->setGeometry(QRect(480, 160, 83, 25));
         day->setFont(font1);
@@ -523,11 +474,7 @@ public:
         label_6->setText(QCoreApplication::translate("MainWindow", "\346\230\237\346\234\237\344\270\211", nullptr));
         label_7->setText(QCoreApplication::translate("MainWindow", "\346\230\237\346\234\237\345\233\233", nullptr));
         label_8->setText(QCoreApplication::translate("MainWindow", "\346\230\237\346\234\237\344\272\224", nullptr));
-        label_9->setText(QCoreApplication::translate("MainWindow", "\345\215\210\344\274\221", nullptr));
-        label_10->setText(QCoreApplication::translate("MainWindow", "\345\215\210\344\274\221", nullptr));
         label_11->setText(QCoreApplication::translate("MainWindow", "\345\215\210\344\274\221", nullptr));
-        label_12->setText(QCoreApplication::translate("MainWindow", "\345\215\210\344\274\221", nullptr));
-        label_13->setText(QCoreApplication::translate("MainWindow", "\345\215\210\344\274\221", nullptr));
         label_14->setText(QCoreApplication::translate("MainWindow", "\347\254\254\344\270\200\350\212\202", nullptr));
         label_15->setText(QCoreApplication::translate("MainWindow", "\347\254\254\344\272\214\350\212\202", nullptr));
         label_16->setText(QCoreApplication::translate("MainWindow", "\347\254\254\344\270\211\350\212\202", nullptr));
@@ -549,6 +496,7 @@ public:
         day->setItemText(3, QCoreApplication::translate("MainWindow", "3", nullptr));
         day->setItemText(4, QCoreApplication::translate("MainWindow", "4", nullptr));
         day->setItemText(5, QCoreApplication::translate("MainWindow", "5", nullptr));
+        day->setItemText(6, QCoreApplication::translate("MainWindow", "6", nullptr));
 
         label_3->setText(QCoreApplication::translate("MainWindow", "\344\273\212\346\227\245\344\270\212\345\221\250?\347\232\204\350\257\276", nullptr));
     } // retranslateUi

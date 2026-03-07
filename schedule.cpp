@@ -41,8 +41,22 @@ void Schedule::startDailyTimer()
 }
 
 void Schedule::updateLabel(){
+    if(!ui) return;
+
     int day=MainWindow::goodDay();
     QLabel* c[8]={ui->C1,ui->C2,ui->C3,ui->C4,ui->C5,ui->C6,ui->C7,ui->C8};
+
+    QFont f("微软雅黑",14);
+    f.setHintingPreference(QFont::PreferNoHinting);
+    f.setStyleStrategy(QFont::PreferAntialias);
+
+    for(int i=0;i<7;i++){
+        c[i]->setFont(f);
+    }
+    ui->Noon->setFont(f);
+    ui->BB1->setFont(f);
+    ui->BB2->setFont(f);
+
     if(day>=1 && day <=5){
         for(int i=0;i<7;i++){
             QString name="config/";
@@ -129,5 +143,6 @@ void Schedule::onMainWindow(){
 
 Schedule::~Schedule()
 {
+    qDebug()<<1;
     delete ui;
 }

@@ -20,7 +20,6 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     static int goodDay();
-    void setSchedule(Schedule *s) { m_s = s; }
     ~MainWindow();
 
 
@@ -117,11 +116,9 @@ private slots:
 
     void on_checkBox_clicked(bool checked);
 
-
     void on_day_currentTextChanged(const QString &arg1);
 
 private:
-    Schedule *m_s;
     Ui::MainWindow *ui;
 };
 

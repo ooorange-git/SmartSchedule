@@ -31,7 +31,6 @@ private slots:
 
 private:
     Ui::Schedule *ui;
-
     QMenu *contextMenu=nullptr;
     void createContextMenu();
     MainWindow *m_mainwindow;

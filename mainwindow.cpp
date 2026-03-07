@@ -1,4 +1,5 @@
 #include "mainwindow.h"
+#include "qdebug.h"
 #include "ui_mainwindow.h"
 #include "schedule.h"
 #include<QMessageBox>
@@ -31,7 +32,6 @@ int MainWindow::goodDay(){
         return date.dayOfWeek();
     }else{
         if(cD==checkInFile){
-            qDebug()<<91;
             return dayInFile.toInt();
         }else{
             return date.dayOfWeek();
@@ -52,11 +52,11 @@ void turnOn(bool is){
 
 void SetSchedule(int a,int b,QString c){
     QString path="./config/";
-    path+=std::to_string(a);
+    path+=QString::fromStdString(std::to_string(a));
     QDir p;
     p.mkdir(path);
     path+="/";
-    path+=std::to_string(b);
+    path+=QString::fromStdString(std::to_string(b));
 
     QFile file(path);
     if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
@@ -300,7 +300,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_aboutButton_clicked()
 {
-    QMessageBox::information(this,"关于","作者：Oooorange（葛昱阳）\n希望对班级课表有帮助^_^\n版本:Debug0.0.9");
+    QMessageBox::information(this,"关于","作者：Oooorange（葛昱阳）\n希望对班级课表有帮助^_^\n版本:Relese1.1.0\n更新日志:1.将项目迁移到全旧平台Qt5.15.2\n2.适配了极为先进的高级系统Windows™7\n3.解决了版本太新api过于先进的问题\n4.吃了一些元宵压压惊");
 }
 
 
@@ -635,6 +635,5 @@ void MainWindow::on_day_currentTextChanged(const QString &arg1)
     else{
         QMessageBox::warning(this,"错误","设置失败，请检查程序所在的驱动器是否有充足的空间后重试");
     }
-    m_s->updateLabel();
 }
 

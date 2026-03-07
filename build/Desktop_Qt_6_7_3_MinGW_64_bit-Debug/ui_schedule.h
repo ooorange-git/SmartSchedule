@@ -44,7 +44,7 @@ public:
         font.setPointSize(14);
         Schedule->setFont(font);
         QIcon icon;
-        icon.addFile(QString::fromUtf8(":/icon/icon2.png"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
+        icon.addFile(QString::fromUtf8(":/icon/mainIcon.ico"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
         Schedule->setWindowIcon(icon);
         verticalLayout_2 = new QVBoxLayout(Schedule);
         verticalLayout_2->setObjectName("verticalLayout_2");
