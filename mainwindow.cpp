@@ -1,7 +1,7 @@
 #include "mainwindow.h"
-#include "qdebug.h"
 #include "ui_mainwindow.h"
 #include "schedule.h"
+#include "qdebug.h"
 #include<QMessageBox>
 #include<QFile>
 #include<QTextStream>
@@ -614,7 +614,9 @@ void MainWindow::on_checkBox_clicked(bool checked)
 }
 
 
-void MainWindow::on_day_currentTextChanged(const QString &arg1)
+
+
+void MainWindow::on_day_textActivated(const QString &arg1)
 {
     QFile file1("config/day");
     QFile file2("config/dayCheck");
@@ -635,5 +637,6 @@ void MainWindow::on_day_currentTextChanged(const QString &arg1)
     else{
         QMessageBox::warning(this,"错误","设置失败，请检查程序所在的驱动器是否有充足的空间后重试");
     }
+    m_s->updateLabel();
 }
 

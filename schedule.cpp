@@ -6,6 +6,7 @@
 #include <QAction>
 #include <QMenu>
 #include <QDebug>
+#include <QCloseEvent>
 #include <QTimer>
 
 void SetLabel(QFile& file,QLabel *l){
@@ -42,15 +43,15 @@ void Schedule::startDailyTimer()
 
 void Schedule::updateLabel(){
     if(!ui) return;
-
     int day=MainWindow::goodDay();
+    qDebug()<<day;
     QLabel* c[8]={ui->C1,ui->C2,ui->C3,ui->C4,ui->C5,ui->C6,ui->C7,ui->C8};
 
     QFont f("微软雅黑",14);
     f.setHintingPreference(QFont::PreferNoHinting);
     f.setStyleStrategy(QFont::PreferAntialias);
 
-    for(int i=0;i<7;i++){
+    for(int i=0;i<8;i++){
         c[i]->setFont(f);
     }
     ui->Noon->setFont(f);
@@ -58,7 +59,13 @@ void Schedule::updateLabel(){
     ui->BB2->setFont(f);
 
     if(day>=1 && day <=5){
-        for(int i=0;i<7;i++){
+        ui->BB1->setVisible(1);
+        ui->BB2->setVisible(1);
+        ui->BB2->setText("大课间");
+        ui->Noon->setVisible(1);
+        ui->Noon->setText("午休");
+        for(int i=0;i<8;i++){
+            c[i]->setVisible(1);
             QString name="config/";
             name+=QString::number(day);
             name+="\\";
@@ -141,8 +148,13 @@ void Schedule::onMainWindow(){
 
 }
 
+void Schedule::closeEvent(QCloseEvent *event){
+    if(event->isAccepted()){
+        qApp->quit();
+    }
+}
+
 Schedule::~Schedule()
 {
-    qDebug()<<1;
     delete ui;
 }

@@ -29,6 +29,9 @@ private slots:
     void onUpdate();
     void onQuit();
 
+protected:
+    void closeEvent(QCloseEvent *event) override;
+
 private:
     Ui::Schedule *ui;
     QMenu *contextMenu=nullptr;
