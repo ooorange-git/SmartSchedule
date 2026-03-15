@@ -29,9 +29,6 @@ public slots:
 
 
 private slots:
-    void on_RightClockB_clicked(bool checked);
-
-    void on_spinBox_valueChanged(int arg1);
 
     void on_TurnOn_clicked(bool checked);
 

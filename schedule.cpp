@@ -41,50 +41,81 @@ void Schedule::startDailyTimer()
     });
 }
 
+void Schedule::showAll(){
+    ui->Noon->setVisible(1);
+    ui->BB1->setVisible(1);
+    ui->BB2->setVisible(1);
+    ui->C1->setVisible(1);
+    ui->C2->setVisible(1);
+    ui->C3->setVisible(1);
+    ui->C4->setVisible(1);
+    ui->C5->setVisible(1);
+    ui->C6->setVisible(1);
+    ui->C7->setVisible(1);
+    ui->C8->setVisible(1);
+}
+
+void Schedule::monday(){
+    QLabel* labels[8]={ui->C1,ui->BB1,ui->C3,ui->C4,ui->C5,ui->C6,ui->C7,ui->C8};
+    showAll();
+    ui->C2->setText("升旗仪式");
+    ui->Noon->setText("午休");
+    ui->BB2->setText("双师体育课");
+    for(int i=0;i<8;i++){
+        QString name=QCoreApplication::applicationDirPath()+"/config/1/"+QString::number(i+1);
+        QFile file(name);
+        SetLabel(file,labels[i]);
+    }
+}
+
+void Schedule::weekday(int d){
+    QLabel* labels[8]={ui->C1,ui->C2,ui->C3,ui->C4,ui->C5,ui->C6,ui->C7,ui->C8};
+    showAll();
+    ui->BB1->setText("大课间");
+    ui->Noon->setText("午休");
+    ui->BB2->setText("双师体育课");
+    for(int i=0;i<8;i++){
+        QString name=QCoreApplication::applicationDirPath()+"/config/"+QString::number(d)+"/"+QString::number(i+1);
+        QFile file(name);
+        SetLabel(file,labels[i]);
+    }
+}
+
+void Schedule::weekEnd(){
+    QLabel* c[8]={ui->C1,ui->C2,ui->C3,ui->C4,ui->C5,ui->C6,ui->C7,ui->C8};
+    c[1]->setText("今");
+    ui->Noon->setText("天");
+    c[5]->setText("无");
+    ui->BB2->setText("课");
+    c[0]->setVisible(0);
+    c[2]->setVisible(0);
+    c[3]->setVisible(0);
+    c[4]->setVisible(0);
+    c[6]->setVisible(0);
+    c[7]->setVisible(0);
+    ui->BB1->setVisible(0);
+}
+
 void Schedule::updateLabel(){
     if(!ui) return;
     int day=MainWindow::goodDay();
-    qDebug()<<day;
+
     QLabel* c[8]={ui->C1,ui->C2,ui->C3,ui->C4,ui->C5,ui->C6,ui->C7,ui->C8};
 
-    QFont f("微软雅黑",14);
+    QFont f("LXGW WenKai Lite Medium",14);
     f.setHintingPreference(QFont::PreferNoHinting);
     f.setStyleStrategy(QFont::PreferAntialias);
-
-    for(int i=0;i<8;i++){
-        c[i]->setFont(f);
-    }
+    for(int i=0;i<8;i++){c[i]->setFont(f);}
     ui->Noon->setFont(f);
     ui->BB1->setFont(f);
     ui->BB2->setFont(f);
 
-    if(day>=1 && day <=5){
-        ui->BB1->setVisible(1);
-        ui->BB2->setVisible(1);
-        ui->BB2->setText("大课间");
-        ui->Noon->setVisible(1);
-        ui->Noon->setText("午休");
-        for(int i=0;i<8;i++){
-            c[i]->setVisible(1);
-            QString name="config/";
-            name+=QString::number(day);
-            name+="\\";
-            name+=QString::number(i+1);
-            QFile file(name);
-            SetLabel(file,c[i]);
-        }
+    if(day==1){
+        monday();
+    }else if(day>=2 && day <=5){
+        weekday(day);
     }else{
-        c[1]->setText("今");
-        ui->Noon->setText("天");
-        c[5]->setText("无");
-        ui->BB2->setText("课");
-        c[0]->setVisible(0);
-        c[2]->setVisible(0);
-        c[3]->setVisible(0);
-        c[4]->setVisible(0);
-        c[6]->setVisible(0);
-        c[7]->setVisible(0);
-        ui->BB1->setVisible(0);
+        weekEnd();
     }
 
 }
@@ -97,6 +128,10 @@ Schedule::Schedule(QWidget *parent)
 
     setWindowFlags(Qt::WindowCloseButtonHint | Qt::WindowStaysOnBottomHint);
     setWindowTitle(" ");
+    QPalette pal = this->palette();
+    pal.setColor(QPalette::Window,QColor("#F0F0F4"));
+    this->setPalette(pal);
+    this->setAutoFillBackground(1);
 
     //右键菜单
     setContextMenuPolicy(Qt::CustomContextMenu);

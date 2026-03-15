@@ -15,12 +15,12 @@
 #include<QDate>
 
 int MainWindow::goodDay(){
-    QFile file("config/day");
+    QFile file(QCoreApplication::applicationDirPath()+"/config/day");
     file.open(QIODevice::ReadOnly | QIODevice::Text);
     QTextStream in(&file);
     QString dayInFile=in.readAll();//文件中设置的星期
 
-    QFile file2("config/dayCheck");
+    QFile file2(QCoreApplication::applicationDirPath()+"/config/dayCheck");
     file2.open(QIODevice::ReadOnly | QIODevice::Text);
     QTextStream in2(&file2);
     int checkInFile=in2.readAll().toInt();
@@ -51,7 +51,7 @@ void turnOn(bool is){
 }
 
 void SetSchedule(int a,int b,QString c){
-    QString path="./config/";
+    QString path=QCoreApplication::applicationDirPath()+"/config/";
     path+=QString::fromStdString(std::to_string(a));
     QDir p;
     p.mkdir(path);
@@ -85,38 +85,43 @@ void SetLineEditState(QFile& file,QLineEdit *le){
 }
 
 
-
-
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    QDir p;
-    p.mkdir("config");
 
-    QFile file("config/TurnOn");
+    QPalette pal = this->palette();
+    pal.setColor(QPalette::Window,QColor("#F0F0F4"));
+    this->setPalette(pal);
+    this->setAutoFillBackground(1);
+
+    QDir p;
+    p.mkdir(QCoreApplication::applicationDirPath()+"/config");
+    qDebug()<<QCoreApplication::applicationDirPath();
+
+    QFile file(QCoreApplication::applicationDirPath()+"/config/TurnOn");
     file.open(QIODevice::ReadOnly | QIODevice::Text);
     QTextStream in1(&file);
     int c=in1.readAll().toInt();
     turnOn(c);
     file.close();
 
-    QSpinBox *toumindu = ui->spinBox;
-    file.setFileName("config/toumindu");
-    file.open(QIODevice::ReadOnly | QIODevice::Text);
-    QTextStream in(&file);
-    QString content = in.readAll();
-    file.close();
-    toumindu->setValue(content.toInt());
+    // QSpinBox *toumindu = ui->spinBox;
+    // file.setFileName(QCoreApplication::applicationDirPath()+"/config/toumindu");
+    // file.open(QIODevice::ReadOnly | QIODevice::Text);
+    // QTextStream in(&file);
+    // QString content = in.readAll();
+    // file.close();
+    // toumindu->setValue(content.toInt());
 
     QCheckBox *turnOn = ui->TurnOn;
-    file.setFileName("config/TurnOn");
+    file.setFileName(QCoreApplication::applicationDirPath()+"/config/TurnOn");
     SetCheckboxState(file,turnOn);
 
-    QCheckBox *RC = ui->RightClockB;
-    file.setFileName("config/RightClock");
-    SetCheckboxState(file,RC);
+    // QCheckBox *RC = ui->RightClockB;
+    // file.setFileName(QCoreApplication::applicationDirPath()+"/config/RightClock");
+    // SetCheckboxState(file,RC);
 
     QComboBox *day = ui->day;
     if(MainWindow::goodDay()==QDate::currentDate().dayOfWeek()){
@@ -126,169 +131,169 @@ MainWindow::MainWindow(QWidget *parent)
     }
 
     QCheckBox *bl = ui->checkBox;
-    file.setFileName("config/blur");
+    file.setFileName(QCoreApplication::applicationDirPath()+"/config/blur");
     SetCheckboxState(file,bl);
     bl->setVisible(0);
     ui->label->setVisible(0);
 
     QLineEdit *L11 = ui->L11;
-    file.setFileName("config/1/1");
+    file.setFileName(QCoreApplication::applicationDirPath()+"/config/1/1");
     SetLineEditState(file,L11);
 
     QLineEdit *L12 = ui->L12;
-    file.setFileName("config/1/2");
+    file.setFileName(QCoreApplication::applicationDirPath()+"/config/1/2");
     SetLineEditState(file,L12);
 
     QLineEdit *L13 = ui->L13;
-    file.setFileName("config/1/3");
+    file.setFileName(QCoreApplication::applicationDirPath()+"/config/1/3");
     SetLineEditState(file,L13);
 
     QLineEdit *L14 = ui->L14;
-    file.setFileName("config/1/4");
+    file.setFileName(QCoreApplication::applicationDirPath()+"/config/1/4");
     SetLineEditState(file,L14);
 
     QLineEdit *L15 = ui->L15;
-    file.setFileName("config/1/5");
+    file.setFileName(QCoreApplication::applicationDirPath()+"/config/1/5");
     SetLineEditState(file,L15);
 
     QLineEdit *L16 = ui->L16;
-    file.setFileName("config/1/6");
+    file.setFileName(QCoreApplication::applicationDirPath()+"/config/1/6");
     SetLineEditState(file,L16);
 
     QLineEdit *L17 = ui->L17;
-    file.setFileName("config/1/7");
+    file.setFileName(QCoreApplication::applicationDirPath()+"/config/1/7");
     SetLineEditState(file,L17);
 
     QLineEdit *L18 = ui->L18;
-    file.setFileName("config/1/8");
+    file.setFileName(QCoreApplication::applicationDirPath()+"/config/1/8");
     SetLineEditState(file,L18);
 
     QLineEdit *L21 = ui->L21;
-    file.setFileName("config/2/1");
+    file.setFileName(QCoreApplication::applicationDirPath()+"/config/2/1");
     SetLineEditState(file,L21);
 
     QLineEdit *L22 = ui->L22;
-    file.setFileName("config/2/2");
+    file.setFileName(QCoreApplication::applicationDirPath()+"/config/2/2");
     SetLineEditState(file,L22);
 
     QLineEdit *L23 = ui->L23;
-    file.setFileName("config/2/3");
+    file.setFileName(QCoreApplication::applicationDirPath()+"/config/2/3");
     SetLineEditState(file,L23);
 
     QLineEdit *L24 = ui->L24;
-    file.setFileName("config/2/4");
+    file.setFileName(QCoreApplication::applicationDirPath()+"/config/2/4");
     SetLineEditState(file,L24);
 
     QLineEdit *L25 = ui->L25;
-    file.setFileName("config/2/5");
+    file.setFileName(QCoreApplication::applicationDirPath()+"/config/2/5");
     SetLineEditState(file,L25);
 
     QLineEdit *L26 = ui->L26;
-    file.setFileName("config/2/6");
+    file.setFileName(QCoreApplication::applicationDirPath()+"/config/2/6");
     SetLineEditState(file,L26);
 
     QLineEdit *L27 = ui->L27;
-    file.setFileName("config/2/7");
+    file.setFileName(QCoreApplication::applicationDirPath()+"/config/2/7");
     SetLineEditState(file,L27);
 
     QLineEdit *L28 = ui->L28;
-    file.setFileName("config/2/8");
+    file.setFileName(QCoreApplication::applicationDirPath()+"/config/2/8");
     SetLineEditState(file,L28);
 
     QLineEdit *L31 = ui->L31;
-    file.setFileName("config/3/1");
+    file.setFileName(QCoreApplication::applicationDirPath()+"/config/3/1");
     SetLineEditState(file,L31);
 
     QLineEdit *L32 = ui->L32;
-    file.setFileName("config/3/2");
+    file.setFileName(QCoreApplication::applicationDirPath()+"/config/3/2");
     SetLineEditState(file,L32);
 
     QLineEdit *L33 = ui->L33;
-    file.setFileName("config/3/3");
+    file.setFileName(QCoreApplication::applicationDirPath()+"/config/3/3");
     SetLineEditState(file,L33);
 
     QLineEdit *L34 = ui->L34;
-    file.setFileName("config/3/4");
+    file.setFileName(QCoreApplication::applicationDirPath()+"/config/3/4");
     SetLineEditState(file,L34);
 
     QLineEdit *L35 = ui->L35;
-    file.setFileName("config/3/5");
+    file.setFileName(QCoreApplication::applicationDirPath()+"/config/3/5");
     SetLineEditState(file,L35);
 
     QLineEdit *L36 = ui->L36;
-    file.setFileName("config/3/6");
+    file.setFileName(QCoreApplication::applicationDirPath()+"/config/3/6");
     SetLineEditState(file,L36);
 
     QLineEdit *L37 = ui->L37;
-    file.setFileName("config/3/7");
+    file.setFileName(QCoreApplication::applicationDirPath()+"/config/3/7");
     SetLineEditState(file,L37);
 
     QLineEdit *L38 = ui->L38;
-    file.setFileName("config/3/8");
+    file.setFileName(QCoreApplication::applicationDirPath()+"/config/3/8");
     SetLineEditState(file,L38);
 
     QLineEdit *L41 = ui->L41;
-    file.setFileName("config/4/1");
+    file.setFileName(QCoreApplication::applicationDirPath()+"/config/4/1");
     SetLineEditState(file,L41);
 
     QLineEdit *L42 = ui->L42;
-    file.setFileName("config/4/2");
+    file.setFileName(QCoreApplication::applicationDirPath()+"/config/4/2");
     SetLineEditState(file,L42);
 
     QLineEdit *L43 = ui->L43;
-    file.setFileName("config/4/3");
+    file.setFileName(QCoreApplication::applicationDirPath()+"/config/4/3");
     SetLineEditState(file,L43);
 
     QLineEdit *L44 = ui->L44;
-    file.setFileName("config/4/4");
+    file.setFileName(QCoreApplication::applicationDirPath()+"/config/4/4");
     SetLineEditState(file,L44);
 
     QLineEdit *L45 = ui->L45;
-    file.setFileName("config/4/5");
+    file.setFileName(QCoreApplication::applicationDirPath()+"/config/4/5");
     SetLineEditState(file,L45);
 
     QLineEdit *L46 = ui->L46;
-    file.setFileName("config/4/6");
+    file.setFileName(QCoreApplication::applicationDirPath()+"/config/4/6");
     SetLineEditState(file,L46);
 
     QLineEdit *L47 = ui->L47;
-    file.setFileName("config/4/7");
+    file.setFileName(QCoreApplication::applicationDirPath()+"/config/4/7");
     SetLineEditState(file,L47);
 
     QLineEdit *L48 = ui->L48;
-    file.setFileName("config/4/8");
+    file.setFileName(QCoreApplication::applicationDirPath()+"/config/4/8");
     SetLineEditState(file,L48);
 
     QLineEdit *L51 = ui->L51;
-    file.setFileName("config/5/1");
+    file.setFileName(QCoreApplication::applicationDirPath()+"/config/5/1");
     SetLineEditState(file,L51);
 
     QLineEdit *L52 = ui->L52;
-    file.setFileName("config/5/2");
+    file.setFileName(QCoreApplication::applicationDirPath()+"/config/5/2");
     SetLineEditState(file,L52);
 
     QLineEdit *L53 = ui->L53;
-    file.setFileName("config/5/3");
+    file.setFileName(QCoreApplication::applicationDirPath()+"/config/5/3");
     SetLineEditState(file,L53);
 
     QLineEdit *L54 = ui->L54;
-    file.setFileName("config/5/4");
+    file.setFileName(QCoreApplication::applicationDirPath()+"/config/5/4");
     SetLineEditState(file,L54);
 
     QLineEdit *L55 = ui->L55;
-    file.setFileName("config/5/5");
+    file.setFileName(QCoreApplication::applicationDirPath()+"/config/5/5");
     SetLineEditState(file,L55);
 
     QLineEdit *L56 = ui->L56;
-    file.setFileName("config/5/6");
+    file.setFileName(QCoreApplication::applicationDirPath()+"/config/5/6");
     SetLineEditState(file,L56);
 
     QLineEdit *L57 = ui->L57;
-    file.setFileName("config/5/7");
+    file.setFileName(QCoreApplication::applicationDirPath()+"/config/5/7");
     SetLineEditState(file,L57);
 
     QLineEdit *L58 = ui->L58;
-    file.setFileName("config/5/8");
+    file.setFileName(QCoreApplication::applicationDirPath()+"/config/5/8");
     SetLineEditState(file,L58);
 }
 
@@ -300,13 +305,13 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_aboutButton_clicked()
 {
-    QMessageBox::information(this,"关于","作者：Oooorange（葛昱阳）\n希望对班级课表有帮助^_^\n版本:Relese1.1.0\n更新日志:1.将项目迁移到全旧平台Qt5.15.2\n2.适配了极为先进的高级系统Windows™7\n3.解决了版本太新api过于先进的问题\n4.吃了一些元宵压压惊");
+    QMessageBox::information(this,"关于","作者：ooorange\n希望对班级课表有帮助\n版本:Relese1.1.2\n更新日志:1.修复了开机自启动时显示空白窗口的问题\n2.优化了窗口背景及字体显示\n3.调整了部分课程位置和文案准确性\n4.优化代码逻辑\n5.删除了两个没用的控件并增加了一个没用的控件\n6.移除了him");
 }
 
 
 void MainWindow::on_TurnOn_clicked(bool checked)
 {
-    QFile file("config/TurnOn");
+    QFile file(QCoreApplication::applicationDirPath()+"/config/TurnOn");
     if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         QTextStream out(&file);
         if(checked){
@@ -325,36 +330,36 @@ void MainWindow::on_TurnOn_clicked(bool checked)
 }
 
 
-void MainWindow::on_RightClockB_clicked(bool checked)
-{
-    QFile file("config/RightClock");
-    if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        QTextStream out(&file);
-        if(checked){
-            out << 1;
-        }else{
-            out << 0;
-        }
-        file.close();
-    }
-    else{
-        QMessageBox::warning(this,"错误","设置失败，请检查程序所在的驱动器是否有充足的空间后重试");
-    }
-}
+// void MainWindow::on_RightClockB_clicked(bool checked)
+// {
+//     QFile file(QCoreApplication::applicationDirPath()+"/config/RightClock");
+//     if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+//         QTextStream out(&file);
+//         if(checked){
+//             out << 1;
+//         }else{
+//             out << 0;
+//         }
+//         file.close();
+//     }
+//     else{
+//         QMessageBox::warning(this,"错误","设置失败，请检查程序所在的驱动器是否有充足的空间后重试");
+//     }
+// }
 
 
-void MainWindow::on_spinBox_valueChanged(int arg1)
-{
-    QFile file("config/toumindu");
-    if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        QTextStream out(&file);
-        out << arg1;
-        file.close();
-    }
-    else{
-        QMessageBox::warning(this,"错误","设置失败，请检查程序所在的驱动器是否有充足的空间后重试");
-    }
-}
+// void MainWindow::on_spinBox_valueChanged(int arg1)
+// {
+//     QFile file(QCoreApplication::applicationDirPath()+"/config/toumindu");
+//     if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+//         QTextStream out(&file);
+//         out << arg1;
+//         file.close();
+//     }
+//     else{
+//         QMessageBox::warning(this,"错误","设置失败，请检查程序所在的驱动器是否有充足的空间后重试");
+//     }
+// }
 
 
 void MainWindow::on_L11_textEdited(const QString &arg1)
@@ -598,7 +603,7 @@ void MainWindow::on_L58_textEdited(const QString &arg1)
 
 void MainWindow::on_checkBox_clicked(bool checked)
 {
-    QFile file("config/blur");
+    QFile file(QCoreApplication::applicationDirPath()+"/config/blur");
     if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         QTextStream out(&file);
         if(checked){
@@ -618,8 +623,8 @@ void MainWindow::on_checkBox_clicked(bool checked)
 
 void MainWindow::on_day_textActivated(const QString &arg1)
 {
-    QFile file1("config/day");
-    QFile file2("config/dayCheck");
+    QFile file1(QCoreApplication::applicationDirPath()+"/config/day");
+    QFile file2(QCoreApplication::applicationDirPath()+"/config/dayCheck");
     QDate currentDate = QDate::currentDate();
     if (file1.open(QIODevice::WriteOnly | QIODevice::Text)){
         QTextStream out(&file1);

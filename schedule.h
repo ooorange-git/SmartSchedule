@@ -20,6 +20,10 @@ public:
     explicit Schedule(QWidget *parent = nullptr);
     ~Schedule();
     void updateLabel();
+    void monday();
+    void weekday(int d);
+    void weekEnd();
+    void showAll();
     void startDailyTimer();
     void SetMain(MainWindow *w){ m_mainwindow=w; };
 
@@ -36,6 +40,7 @@ private:
     Ui::Schedule *ui;
     QMenu *contextMenu=nullptr;
     void createContextMenu();
+
     MainWindow *m_mainwindow;
 };
 

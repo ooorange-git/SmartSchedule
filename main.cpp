@@ -9,13 +9,22 @@
 #include<QTextStream>
 #include<QScreen>
 #include<QRect>
-
+#include<QFontDatabase>
+#include<QDebug>
 
 
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+
+    int fontId1 = QFontDatabase::addApplicationFont(":/font/LXGWWenKaiLite-Medium.ttf");
+    if (fontId1 != -1) {
+        QStringList fontFamilies1 = QFontDatabase::applicationFontFamilies(fontId1);
+        qDebug()<<fontFamilies1<<111111;
+    }
+
+
     MainWindow w;
     QScreen *primaryScreen = QGuiApplication::primaryScreen();
     QRect screenGeometry = primaryScreen->geometry();

@@ -1,6 +1,9 @@
 <RCC>
     <qresource prefix="/icon">
         <file>icon1.png</file>
-        <file>mainIcon.ico</file>
+        <file>logo.ico</file>
+    </qresource>
+    <qresource prefix="/font">
+        <file>LXGWWenKaiLite-Medium.ttf</file>
     </qresource>
 </RCC>

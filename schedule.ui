@@ -6,27 +6,43 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>93</width>
-    <height>419</height>
+    <width>106</width>
+    <height>393</height>
    </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>0</width>
+    <height>0</height>
+   </size>
   </property>
   <property name="font">
    <font>
     <pointsize>14</pointsize>
+    <stylestrategy>PreferAntialias</stylestrategy>
    </font>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="icon.qrc">
+   <iconset>
     <normaloff>:/icon/mainIcon.ico</normaloff>:/icon/mainIcon.ico</iconset>
+  </property>
+  <property name="styleSheet">
+   <string notr="true"/>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
       <widget class="QLabel" name="C1">
+       <property name="font">
+        <font>
+         <pointsize>14</pointsize>
+         <stylestrategy>PreferAntialias</stylestrategy>
+        </font>
+       </property>
        <property name="text">
         <string>?</string>
        </property>
@@ -37,6 +53,12 @@
      </item>
      <item>
       <widget class="QLabel" name="BB1">
+       <property name="font">
+        <font>
+         <pointsize>14</pointsize>
+         <stylestrategy>PreferAntialias</stylestrategy>
+        </font>
+       </property>
        <property name="text">
         <string>大课间</string>
        </property>
@@ -47,6 +69,12 @@
      </item>
      <item>
       <widget class="QLabel" name="C2">
+       <property name="font">
+        <font>
+         <pointsize>14</pointsize>
+         <stylestrategy>PreferAntialias</stylestrategy>
+        </font>
+       </property>
        <property name="text">
         <string>?</string>
        </property>
@@ -57,6 +85,12 @@
      </item>
      <item>
       <widget class="QLabel" name="C3">
+       <property name="font">
+        <font>
+         <pointsize>14</pointsize>
+         <stylestrategy>PreferAntialias</stylestrategy>
+        </font>
+       </property>
        <property name="text">
         <string>?</string>
        </property>
@@ -67,6 +101,12 @@
      </item>
      <item>
       <widget class="QLabel" name="C4">
+       <property name="font">
+        <font>
+         <pointsize>14</pointsize>
+         <stylestrategy>PreferAntialias</stylestrategy>
+        </font>
+       </property>
        <property name="text">
         <string>?</string>
        </property>
@@ -77,6 +117,13 @@
      </item>
      <item>
       <widget class="QLabel" name="Noon">
+       <property name="font">
+        <font>
+         <pointsize>14</pointsize>
+         <bold>false</bold>
+         <stylestrategy>PreferAntialias</stylestrategy>
+        </font>
+       </property>
        <property name="text">
         <string>午休</string>
        </property>
@@ -87,6 +134,12 @@
      </item>
      <item>
       <widget class="QLabel" name="C5">
+       <property name="font">
+        <font>
+         <pointsize>14</pointsize>
+         <stylestrategy>PreferAntialias</stylestrategy>
+        </font>
+       </property>
        <property name="text">
         <string>?</string>
        </property>
@@ -97,6 +150,12 @@
      </item>
      <item>
       <widget class="QLabel" name="C6">
+       <property name="font">
+        <font>
+         <pointsize>14</pointsize>
+         <stylestrategy>PreferAntialias</stylestrategy>
+        </font>
+       </property>
        <property name="text">
         <string>?</string>
        </property>
@@ -107,6 +166,12 @@
      </item>
      <item>
       <widget class="QLabel" name="C7">
+       <property name="font">
+        <font>
+         <pointsize>14</pointsize>
+         <stylestrategy>PreferAntialias</stylestrategy>
+        </font>
+       </property>
        <property name="text">
         <string>?</string>
        </property>
@@ -117,8 +182,14 @@
      </item>
      <item>
       <widget class="QLabel" name="BB2">
+       <property name="font">
+        <font>
+         <pointsize>14</pointsize>
+         <stylestrategy>PreferAntialias</stylestrategy>
+        </font>
+       </property>
        <property name="text">
-        <string>大课间</string>
+        <string>体育课</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
@@ -129,6 +200,18 @@
       <widget class="QLabel" name="C8">
        <property name="enabled">
         <bool>true</bool>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>14</pointsize>
+         <stylestrategy>PreferAntialias</stylestrategy>
+        </font>
        </property>
        <property name="text">
         <string>?</string>
@@ -142,8 +225,6 @@
    </item>
   </layout>
  </widget>
- <resources>
-  <include location="icon.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>
