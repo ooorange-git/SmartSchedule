@@ -37,6 +37,40 @@ int MainWindow::goodDay(){
             return date.dayOfWeek();
         }
     }
+    file.close();
+    file2.close();
+}
+
+//该函数能返回精确周数含用户手动加减！！！
+int MainWindow::weekNow(QDateEdit *l){
+    int total=1;
+    QFile file(QCoreApplication::applicationDirPath()+"/config/startTerm");
+    QDate d2=QDate::currentDate();
+    if(file.open(QIODevice::ReadOnly | QIODevice::Text)){
+        QTextStream in(&file);
+        QDate d1=QDate::fromString(in.readAll().trimmed(),Qt::ISODate);
+        if(d1>d2){
+            if(l){
+                l->setDate(QDate::currentDate());
+            }
+            return 0;
+        }
+        for(;d1!=d2;d1=d1.addDays(1)){
+            if(d1.dayOfWeek()==7){
+                total++;
+            }
+        }
+    }
+    file.close();
+
+    QFile file2(QCoreApplication::applicationDirPath()+"/config/change");
+    file2.open(QIODevice::ReadOnly | QIODevice::Text);
+    QTextStream in2(&file2);
+    int c=in2.readAll().toInt();
+    file2.close();
+    total+=c;
+    qDebug()<<c;
+    return total;
 }
 
 void turnOn(bool is){
@@ -84,6 +118,10 @@ void SetLineEditState(QFile& file,QLineEdit *le){
     le->setText(content);
 }
 
+void MainWindow::showWeek(){
+    QLabel *sW = ui->week;
+    sW->setText("今天是开学第"+QString::number(weekNow(ui->dateEdit))+"周");
+}
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -107,21 +145,10 @@ MainWindow::MainWindow(QWidget *parent)
     turnOn(c);
     file.close();
 
-    // QSpinBox *toumindu = ui->spinBox;
-    // file.setFileName(QCoreApplication::applicationDirPath()+"/config/toumindu");
-    // file.open(QIODevice::ReadOnly | QIODevice::Text);
-    // QTextStream in(&file);
-    // QString content = in.readAll();
-    // file.close();
-    // toumindu->setValue(content.toInt());
-
     QCheckBox *turnOn = ui->TurnOn;
     file.setFileName(QCoreApplication::applicationDirPath()+"/config/TurnOn");
     SetCheckboxState(file,turnOn);
 
-    // QCheckBox *RC = ui->RightClockB;
-    // file.setFileName(QCoreApplication::applicationDirPath()+"/config/RightClock");
-    // SetCheckboxState(file,RC);
 
     QComboBox *day = ui->day;
     if(MainWindow::goodDay()==QDate::currentDate().dayOfWeek()){
@@ -130,11 +157,13 @@ MainWindow::MainWindow(QWidget *parent)
         day->setCurrentIndex(goodDay());
     }
 
-    QCheckBox *bl = ui->checkBox;
-    file.setFileName(QCoreApplication::applicationDirPath()+"/config/blur");
-    SetCheckboxState(file,bl);
-    bl->setVisible(0);
-    ui->label->setVisible(0);
+    QDateEdit *StartDate = ui->dateEdit;
+    file.setFileName(QCoreApplication::applicationDirPath()+"/config/startTerm");
+    if(file.open(QIODevice::ReadOnly | QIODevice::Text)){StartDate->setDate(QDate::fromString(QTextStream(&file).readAll().trimmed(),Qt::ISODate));}
+
+    QSpinBox *w=ui->spinBox;
+    file.setFileName(QCoreApplication::applicationDirPath()+"/config/change");
+    if(file.open(QIODevice::ReadOnly | QIODevice::Text)){w->setValue(QTextStream(&file).readAll().trimmed().toInt());}
 
     QLineEdit *L11 = ui->L11;
     file.setFileName(QCoreApplication::applicationDirPath()+"/config/1/1");
@@ -303,9 +332,10 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+//关于
 void MainWindow::on_aboutButton_clicked()
 {
-    QMessageBox::information(this,"关于","作者：ooorange\n希望对班级课表有帮助\n版本:Relese1.1.2\n更新日志:1.修复了开机自启动时显示空白窗口的问题\n2.优化了窗口背景及字体显示\n3.调整了部分课程位置和文案准确性\n4.优化代码逻辑\n5.删除了两个没用的控件并增加了一个没用的控件\n6.移除了him");
+    QMessageBox::information(this,"关于","作者：ooorange\n希望对班级课表有帮助(゜-゜)つロ 干杯~\n版本:Release1.1.5\n更新日志:1.增加了设置窗口与课程表窗口自由放大缩小功能\n2.现在课程表可以自动刷新\n3.支持显示单双周（格式：“单周课/双周课”可自动识别显示）！！！");
 }
 
 
@@ -329,37 +359,6 @@ void MainWindow::on_TurnOn_clicked(bool checked)
     }
 }
 
-
-// void MainWindow::on_RightClockB_clicked(bool checked)
-// {
-//     QFile file(QCoreApplication::applicationDirPath()+"/config/RightClock");
-//     if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-//         QTextStream out(&file);
-//         if(checked){
-//             out << 1;
-//         }else{
-//             out << 0;
-//         }
-//         file.close();
-//     }
-//     else{
-//         QMessageBox::warning(this,"错误","设置失败，请检查程序所在的驱动器是否有充足的空间后重试");
-//     }
-// }
-
-
-// void MainWindow::on_spinBox_valueChanged(int arg1)
-// {
-//     QFile file(QCoreApplication::applicationDirPath()+"/config/toumindu");
-//     if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-//         QTextStream out(&file);
-//         out << arg1;
-//         file.close();
-//     }
-//     else{
-//         QMessageBox::warning(this,"错误","设置失败，请检查程序所在的驱动器是否有充足的空间后重试");
-//     }
-// }
 
 
 void MainWindow::on_L11_textEdited(const QString &arg1)
@@ -643,5 +642,33 @@ void MainWindow::on_day_textActivated(const QString &arg1)
         QMessageBox::warning(this,"错误","设置失败，请检查程序所在的驱动器是否有充足的空间后重试");
     }
     m_s->updateLabel();
+}
+
+
+void MainWindow::on_dateEdit_userDateChanged(const QDate &date)
+{
+    QFile file(QCoreApplication::applicationDirPath()+"/config/startTerm");
+    if(file.open(QIODevice::WriteOnly | QIODevice::Text)){
+        QTextStream out(&file);
+        out<<date.toString(Qt::ISODate);
+        file.close();
+    }else{
+        QMessageBox::warning(this,"俺寻思不对啊","设置失败，请检查程序所在驱动器是否有足够的存储空间或是否处于系统文件夹等无权限访问文件夹内");
+    }
+    showWeek();
+}
+
+
+void MainWindow::on_spinBox_textChanged(const QString &arg1)
+{
+    QFile file(QCoreApplication::applicationDirPath()+"/config/change");
+    if(file.open(QIODevice::WriteOnly | QIODevice::Text)){
+        QTextStream out(&file);
+        out<<arg1;
+        file.close();
+    }else{
+        QMessageBox::warning(this,"---放大一点 ---嗯对","设置失败，请检查程序所在驱动器是否有足够的存储空间或是否处于系统文件夹等无权限访问文件夹内");
+    }
+    showWeek();
 }
 

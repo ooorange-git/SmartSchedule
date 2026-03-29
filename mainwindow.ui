@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>623</width>
-    <height>638</height>
+    <height>600</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -21,1008 +21,817 @@
    <string notr="true"/>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QGroupBox" name="groupBox">
-    <property name="enabled">
-     <bool>true</bool>
+   <layout class="QVBoxLayout" name="verticalLayout" stretch="2,1">
+    <property name="leftMargin">
+     <number>22</number>
     </property>
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>10</y>
-      <width>581</width>
-      <height>371</height>
-     </rect>
+    <property name="rightMargin">
+     <number>22</number>
     </property>
-    <property name="font">
-     <font>
-      <pointsize>14</pointsize>
-     </font>
-    </property>
-    <property name="title">
-     <string>课程表</string>
-    </property>
-    <widget class="Line" name="line_3">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>60</y>
-       <width>581</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_4">
-     <property name="geometry">
-      <rect>
-       <x>110</x>
-       <y>40</y>
-       <width>69</width>
-       <height>19</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>星期一</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_5">
-     <property name="geometry">
-      <rect>
-       <x>210</x>
-       <y>40</y>
-       <width>69</width>
-       <height>19</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>星期二</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_6">
-     <property name="geometry">
-      <rect>
-       <x>310</x>
-       <y>40</y>
-       <width>69</width>
-       <height>19</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>星期三</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_7">
-     <property name="geometry">
-      <rect>
-       <x>405</x>
-       <y>40</y>
-       <width>69</width>
-       <height>19</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>星期四</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_8">
-     <property name="geometry">
-      <rect>
-       <x>505</x>
-       <y>40</y>
-       <width>69</width>
-       <height>19</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>星期五</string>
-     </property>
-    </widget>
-    <widget class="Line" name="line_4">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>100</y>
-       <width>581</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-    <widget class="Line" name="line_9">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>140</y>
-       <width>581</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-    <widget class="Line" name="line_10">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>180</y>
-       <width>581</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-    <widget class="Line" name="line_11">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>210</y>
-       <width>581</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-    <widget class="Line" name="line_12">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>240</y>
-       <width>581</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-    <widget class="Line" name="line_13">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>270</y>
-       <width>581</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-    <widget class="Line" name="line_14">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>300</y>
-       <width>581</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-    <widget class="Line" name="line_15">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>330</y>
-       <width>581</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="L11">
-     <property name="geometry">
-      <rect>
-       <x>93</x>
-       <y>80</y>
-       <width>81</width>
-       <height>25</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="L12">
-     <property name="geometry">
-      <rect>
-       <x>93</x>
-       <y>120</y>
-       <width>81</width>
-       <height>25</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="L13">
-     <property name="geometry">
-      <rect>
-       <x>93</x>
-       <y>157</y>
-       <width>81</width>
-       <height>25</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="L14">
-     <property name="geometry">
-      <rect>
-       <x>93</x>
-       <y>192</y>
-       <width>81</width>
-       <height>25</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="L15">
-     <property name="geometry">
-      <rect>
-       <x>93</x>
-       <y>252</y>
-       <width>81</width>
-       <height>25</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="L17">
-     <property name="geometry">
-      <rect>
-       <x>93</x>
-       <y>310</y>
-       <width>81</width>
-       <height>25</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="L16">
-     <property name="geometry">
-      <rect>
-       <x>93</x>
-       <y>280</y>
-       <width>81</width>
-       <height>25</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="L18">
-     <property name="geometry">
-      <rect>
-       <x>93</x>
-       <y>340</y>
-       <width>81</width>
-       <height>25</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="L25">
-     <property name="geometry">
-      <rect>
-       <x>190</x>
-       <y>252</y>
-       <width>81</width>
-       <height>25</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="L23">
-     <property name="geometry">
-      <rect>
-       <x>190</x>
-       <y>157</y>
-       <width>81</width>
-       <height>25</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="L26">
-     <property name="geometry">
-      <rect>
-       <x>190</x>
-       <y>280</y>
-       <width>81</width>
-       <height>25</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="L27">
-     <property name="geometry">
-      <rect>
-       <x>190</x>
-       <y>310</y>
-       <width>81</width>
-       <height>25</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="L21">
-     <property name="geometry">
-      <rect>
-       <x>190</x>
-       <y>80</y>
-       <width>81</width>
-       <height>25</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="L22">
-     <property name="geometry">
-      <rect>
-       <x>190</x>
-       <y>120</y>
-       <width>81</width>
-       <height>25</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="L28">
-     <property name="geometry">
-      <rect>
-       <x>190</x>
-       <y>342</y>
-       <width>81</width>
-       <height>25</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="L24">
-     <property name="geometry">
-      <rect>
-       <x>190</x>
-       <y>192</y>
-       <width>81</width>
-       <height>25</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="L36">
-     <property name="geometry">
-      <rect>
-       <x>290</x>
-       <y>280</y>
-       <width>81</width>
-       <height>25</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="L35">
-     <property name="geometry">
-      <rect>
-       <x>290</x>
-       <y>252</y>
-       <width>81</width>
-       <height>25</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="L38">
-     <property name="geometry">
-      <rect>
-       <x>290</x>
-       <y>342</y>
-       <width>81</width>
-       <height>25</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="L31">
-     <property name="geometry">
-      <rect>
-       <x>290</x>
-       <y>80</y>
-       <width>81</width>
-       <height>25</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="L33">
-     <property name="geometry">
-      <rect>
-       <x>290</x>
-       <y>157</y>
-       <width>81</width>
-       <height>25</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_11">
-     <property name="geometry">
-      <rect>
-       <x>270</x>
-       <y>225</y>
-       <width>41</width>
-       <height>19</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>午休</string>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="L34">
-     <property name="geometry">
-      <rect>
-       <x>290</x>
-       <y>192</y>
-       <width>81</width>
-       <height>25</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="L32">
-     <property name="geometry">
-      <rect>
-       <x>290</x>
-       <y>120</y>
-       <width>81</width>
-       <height>25</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="L37">
-     <property name="geometry">
-      <rect>
-       <x>290</x>
-       <y>310</y>
-       <width>81</width>
-       <height>25</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="L47">
-     <property name="geometry">
-      <rect>
-       <x>390</x>
-       <y>310</y>
-       <width>81</width>
-       <height>25</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="L46">
-     <property name="geometry">
-      <rect>
-       <x>390</x>
-       <y>280</y>
-       <width>81</width>
-       <height>25</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="L48">
-     <property name="geometry">
-      <rect>
-       <x>390</x>
-       <y>342</y>
-       <width>81</width>
-       <height>25</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="L43">
-     <property name="geometry">
-      <rect>
-       <x>390</x>
-       <y>157</y>
-       <width>81</width>
-       <height>25</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="L44">
-     <property name="geometry">
-      <rect>
-       <x>390</x>
-       <y>192</y>
-       <width>81</width>
-       <height>25</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="L41">
-     <property name="geometry">
-      <rect>
-       <x>390</x>
-       <y>80</y>
-       <width>81</width>
-       <height>25</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="L42">
-     <property name="geometry">
-      <rect>
-       <x>390</x>
-       <y>120</y>
-       <width>81</width>
-       <height>25</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="L45">
-     <property name="geometry">
-      <rect>
-       <x>390</x>
-       <y>252</y>
-       <width>81</width>
-       <height>25</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="L56">
-     <property name="geometry">
-      <rect>
-       <x>490</x>
-       <y>280</y>
-       <width>81</width>
-       <height>25</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="L53">
-     <property name="geometry">
-      <rect>
-       <x>490</x>
-       <y>157</y>
-       <width>81</width>
-       <height>25</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="L55">
-     <property name="geometry">
-      <rect>
-       <x>490</x>
-       <y>252</y>
-       <width>81</width>
-       <height>25</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="L58">
-     <property name="geometry">
-      <rect>
-       <x>490</x>
-       <y>342</y>
-       <width>81</width>
-       <height>25</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="L51">
-     <property name="geometry">
-      <rect>
-       <x>490</x>
-       <y>80</y>
-       <width>81</width>
-       <height>25</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="L52">
-     <property name="geometry">
-      <rect>
-       <x>490</x>
-       <y>120</y>
-       <width>81</width>
-       <height>25</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="L54">
-     <property name="geometry">
-      <rect>
-       <x>490</x>
-       <y>192</y>
-       <width>81</width>
-       <height>25</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="L57">
-     <property name="geometry">
-      <rect>
-       <x>490</x>
-       <y>310</y>
-       <width>81</width>
-       <height>25</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="Line" name="line_16">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>360</y>
-       <width>581</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_14">
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>80</y>
-       <width>51</width>
-       <height>19</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>第一节</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_15">
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>120</y>
-       <width>51</width>
-       <height>19</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>第二节</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_16">
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>160</y>
-       <width>51</width>
-       <height>19</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>第三节</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_17">
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>195</y>
-       <width>51</width>
-       <height>19</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>第四节</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_18">
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>255</y>
-       <width>51</width>
-       <height>19</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>第五节</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_19">
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>285</y>
-       <width>51</width>
-       <height>19</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>第六节</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_20">
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>315</y>
-       <width>51</width>
-       <height>19</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>第七节</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_21">
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>345</y>
-       <width>51</width>
-       <height>19</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>第八节</string>
-     </property>
-    </widget>
-   </widget>
-   <widget class="QGroupBox" name="groupBox_2">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>400</y>
-      <width>581</width>
-      <height>221</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>14</pointsize>
-     </font>
-    </property>
-    <property name="title">
-     <string>设置</string>
-    </property>
-    <widget class="QCheckBox" name="TurnOn">
-     <property name="geometry">
-      <rect>
-       <x>50</x>
-       <y>50</y>
-       <width>112</width>
-       <height>25</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-       <kerning>true</kerning>
-      </font>
-     </property>
-     <property name="text">
-      <string>开机自启动</string>
-     </property>
-     <property name="tristate">
-      <bool>false</bool>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="aboutButton">
-     <property name="geometry">
-      <rect>
-       <x>50</x>
-       <y>152</y>
-       <width>93</width>
-       <height>32</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>关于</string>
-     </property>
-    </widget>
-    <widget class="QCheckBox" name="checkBox">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-     <property name="geometry">
-      <rect>
-       <x>170</x>
-       <y>170</y>
-       <width>211</width>
-       <height>23</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>高级材质</string>
-     </property>
-     <property name="tristate">
-      <bool>false</bool>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-     <property name="geometry">
-      <rect>
-       <x>170</x>
-       <y>190</y>
-       <width>141</width>
-       <height>19</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>8</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>可能带来更多资源消耗</string>
-     </property>
-    </widget>
-    <widget class="QComboBox" name="day">
-     <property name="geometry">
-      <rect>
-       <x>169</x>
-       <y>100</y>
-       <width>83</width>
-       <height>25</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <item>
-      <property name="text">
-       <string>自动</string>
+    <item>
+     <widget class="QGroupBox" name="groupBox">
+      <property name="enabled">
+       <bool>true</bool>
       </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>1</string>
+      <property name="font">
+       <font>
+        <pointsize>14</pointsize>
+       </font>
       </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>2</string>
+      <property name="title">
+       <string>课程表</string>
       </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>3</string>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
       </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>4</string>
+      <layout class="QGridLayout" name="gridLayout_2">
+       <item row="1" column="2">
+        <widget class="QLineEdit" name="L21">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
+       </item>
+       <item row="9" column="5">
+        <widget class="QLineEdit" name="L58">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QLineEdit" name="L12">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="2">
+        <widget class="QLineEdit" name="L24">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="5">
+        <widget class="QLineEdit" name="L57">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="5">
+        <widget class="QLineEdit" name="L56">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="4">
+        <widget class="QLineEdit" name="L43">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="0">
+        <widget class="QLabel" name="label_18">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>第五节</string>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="3">
+        <widget class="QLineEdit" name="L37">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="3">
+        <widget class="QLineEdit" name="L31">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="L11">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="label_16">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>第三节</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="2">
+        <widget class="QLineEdit" name="L23">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="1">
+        <widget class="QLineEdit" name="L14">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="5">
+        <widget class="QLineEdit" name="L55">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="3">
+        <widget class="QLineEdit" name="L36">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="4">
+        <widget class="QLineEdit" name="L45">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="3">
+        <widget class="QLabel" name="label_9">
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>午休</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label_14">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>第一节</string>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="0">
+        <widget class="QLabel" name="label_20">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>第七节</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="4">
+        <widget class="QLineEdit" name="L44">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="3">
+        <widget class="QLineEdit" name="L32">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
+       </item>
+       <item row="9" column="0">
+        <widget class="QLabel" name="label_21">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>第八节</string>
+         </property>
+        </widget>
+       </item>
+       <item row="9" column="3">
+        <widget class="QLineEdit" name="L38">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="4">
+        <widget class="QLineEdit" name="L41">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="1">
+        <widget class="QLineEdit" name="L17">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="3">
+        <widget class="QLineEdit" name="L34">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="0">
+        <widget class="QLabel" name="label_19">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>第六节</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QLineEdit" name="L13">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
+       </item>
+       <item row="9" column="1">
+        <widget class="QLineEdit" name="L18">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
+       </item>
+       <item row="9" column="4">
+        <widget class="QLineEdit" name="L48">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="1">
+        <widget class="QLineEdit" name="L16">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="3">
+        <widget class="QLineEdit" name="L35">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="2">
+        <widget class="QLineEdit" name="L25">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="focusPolicy">
+          <enum>Qt::StrongFocus</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="4">
+        <widget class="QLineEdit" name="L46">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="4">
+        <widget class="QLineEdit" name="L47">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="5">
+        <widget class="QLineEdit" name="L51">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="4">
+        <widget class="QLabel" name="label_7">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>星期四</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="4">
+        <widget class="QLineEdit" name="L42">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2">
+        <widget class="QLabel" name="label_5">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>星期二</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="5">
+        <widget class="QLineEdit" name="L52">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="2">
+        <widget class="QLineEdit" name="L26">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
+       </item>
+       <item row="9" column="2">
+        <widget class="QLineEdit" name="L28">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="5">
+        <widget class="QLineEdit" name="L54">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="3">
+        <widget class="QLineEdit" name="L33">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0">
+        <widget class="QLabel" name="label_17">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>第四节</string>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="1">
+        <widget class="QLineEdit" name="L15">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="5">
+        <widget class="QLabel" name="label_8">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>星期五</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="3">
+        <widget class="QLabel" name="label_6">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+           <kerning>true</kerning>
+          </font>
+         </property>
+         <property name="text">
+          <string>星期三</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLabel" name="label_4">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>星期一</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="2">
+        <widget class="QLineEdit" name="L22">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="label_15">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>第二节</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="5">
+        <widget class="QLineEdit" name="L53">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="2">
+        <widget class="QLineEdit" name="L27">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="QGroupBox" name="groupBox_2">
+      <property name="font">
+       <font>
+        <pointsize>14</pointsize>
+       </font>
       </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>5</string>
+      <property name="title">
+       <string>设置</string>
       </property>
-     </item>
-    </widget>
-    <widget class="QLabel" name="label_3">
-     <property name="geometry">
-      <rect>
-       <x>50</x>
-       <y>101</y>
-       <width>111</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>今日上周?的课</string>
-     </property>
-    </widget>
-    <widget class="QDateEdit" name="dateEdit">
-     <property name="geometry">
-      <rect>
-       <x>436</x>
-       <y>100</y>
-       <width>100</width>
-       <height>25</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>9</pointsize>
-      </font>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_2">
-     <property name="geometry">
-      <rect>
-       <x>360</x>
-       <y>101</y>
-       <width>81</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>开学日期</string>
-     </property>
-    </widget>
-   </widget>
+      <layout class="QGridLayout" name="gridLayout" columnstretch="1,1,2,1,1">
+       <property name="leftMargin">
+        <number>20</number>
+       </property>
+       <property name="rightMargin">
+        <number>20</number>
+       </property>
+       <property name="bottomMargin">
+        <number>12</number>
+       </property>
+       <property name="horizontalSpacing">
+        <number>7</number>
+       </property>
+       <property name="verticalSpacing">
+        <number>20</number>
+       </property>
+       <item row="3" column="0">
+        <widget class="QPushButton" name="aboutButton">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>关于</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="4">
+        <widget class="QSpinBox" name="spinBox">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="minimum">
+          <number>-10</number>
+         </property>
+         <property name="maximum">
+          <number>10</number>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QCheckBox" name="TurnOn">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+           <kerning>true</kerning>
+          </font>
+         </property>
+         <property name="text">
+          <string>开机自启动</string>
+         </property>
+         <property name="tristate">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="3">
+        <widget class="QLabel" name="week">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>今天是开学第n周</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label_3">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>今日上周?的课</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="4">
+        <widget class="QDateEdit" name="dateEdit">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>9</pointsize>
+          </font>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QComboBox" name="day">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <item>
+          <property name="text">
+           <string>自动</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>1</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>2</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>3</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>4</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>5</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="1" column="3">
+        <widget class="QLabel" name="label">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>手动增减周数</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="3">
+        <widget class="QLabel" name="label_2">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>开学日期</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="2">
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+    </item>
+   </layout>
   </widget>
  </widget>
  <tabstops>
@@ -1033,7 +842,6 @@
   <tabstop>L15</tabstop>
   <tabstop>L16</tabstop>
   <tabstop>L17</tabstop>
-  <tabstop>L18</tabstop>
   <tabstop>L21</tabstop>
   <tabstop>L22</tabstop>
   <tabstop>L23</tabstop>

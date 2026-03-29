@@ -40,7 +40,7 @@ private:
     Ui::Schedule *ui;
     QMenu *contextMenu=nullptr;
     void createContextMenu();
-
+    QTimer *timer_update;
     MainWindow *m_mainwindow;
 };
 

@@ -14,32 +14,20 @@ void SetLabel(QFile& file,QLabel *l){
     QTextStream in(&file);
     QString content = in.readAll();
     file.close();
+    if(content.contains('/')){
+        qDebug()<<MainWindow::weekNow(nullptr);
+        QStringList sl=content.split('/');
+        if(MainWindow::weekNow(nullptr)%2==0){
+            l->setText(sl[1]);
+        }else{
+            l->setText(sl[0]);
+        }
+        return;
+    }
     l->setText(content);
 }
 
-// mainwindow.cpp
-void Schedule::startDailyTimer()
-{
-    QDateTime now = QDateTime::currentDateTime();
-    // 构造下一个午夜 0:00:00.000
-    QDateTime nextMidnight = now.addDays(1);   // 先加一天
-    nextMidnight.setTime(QTime(0, 0, 0, 0));   // 设置为当天的 00:00:00
-    // 注意：上面先 addDays(1) 再 setTime(0,0) 得到的是明天凌晨
 
-    // 计算到下一个午夜的时间差（毫秒）
-    qint64 msecsToNext = now.msecsTo(nextMidnight);
-    if (msecsToNext <= 0) {
-        // 理论上不会发生，但万一当前时间刚好是午夜 00:00，msecsToNext 可能为 0？
-        // 保险起见，如果 ≤0 则设为 24 小时（86400000 毫秒）
-        msecsToNext = 86400000;
-    }
-
-    // 使用 singleShot 定时触发
-    QTimer::singleShot(msecsToNext, this, [this]() {
-        updateLabel();          // 执行需要的操作
-        startDailyTimer();             // 重新设置下一次
-    });
-}
 
 void Schedule::showAll(){
     ui->Noon->setVisible(1);
@@ -105,6 +93,7 @@ void Schedule::updateLabel(){
     QFont f("LXGW WenKai Lite Medium",14);
     f.setHintingPreference(QFont::PreferNoHinting);
     f.setStyleStrategy(QFont::PreferAntialias);
+
     for(int i=0;i<8;i++){c[i]->setFont(f);}
     ui->Noon->setFont(f);
     ui->BB1->setFont(f);
@@ -117,8 +106,8 @@ void Schedule::updateLabel(){
     }else{
         weekEnd();
     }
-
 }
+
 
 Schedule::Schedule(QWidget *parent)
     : QWidget(parent)
@@ -141,10 +130,9 @@ Schedule::Schedule(QWidget *parent)
     //设置课程
     updateLabel();
 
-
-    //定时器
-    startDailyTimer();
-
+    timer_update = new QTimer(this);
+    connect(timer_update,&QTimer::timeout,this,&Schedule::updateLabel);
+    timer_update->start(10000);
 
 }
 

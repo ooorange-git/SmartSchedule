@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>106</width>
-    <height>393</height>
+    <height>413</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -18,6 +18,7 @@
   </property>
   <property name="font">
    <font>
+    <family>霞鹜文楷</family>
     <pointsize>14</pointsize>
     <stylestrategy>PreferAntialias</stylestrategy>
    </font>
@@ -39,6 +40,7 @@
       <widget class="QLabel" name="C1">
        <property name="font">
         <font>
+         <family>霞鹜文楷</family>
          <pointsize>14</pointsize>
          <stylestrategy>PreferAntialias</stylestrategy>
         </font>
@@ -55,6 +57,7 @@
       <widget class="QLabel" name="BB1">
        <property name="font">
         <font>
+         <family>霞鹜文楷</family>
          <pointsize>14</pointsize>
          <stylestrategy>PreferAntialias</stylestrategy>
         </font>
@@ -71,6 +74,7 @@
       <widget class="QLabel" name="C2">
        <property name="font">
         <font>
+         <family>霞鹜文楷</family>
          <pointsize>14</pointsize>
          <stylestrategy>PreferAntialias</stylestrategy>
         </font>
@@ -87,6 +91,7 @@
       <widget class="QLabel" name="C3">
        <property name="font">
         <font>
+         <family>霞鹜文楷</family>
          <pointsize>14</pointsize>
          <stylestrategy>PreferAntialias</stylestrategy>
         </font>
@@ -103,6 +108,7 @@
       <widget class="QLabel" name="C4">
        <property name="font">
         <font>
+         <family>霞鹜文楷</family>
          <pointsize>14</pointsize>
          <stylestrategy>PreferAntialias</stylestrategy>
         </font>
@@ -119,6 +125,7 @@
       <widget class="QLabel" name="Noon">
        <property name="font">
         <font>
+         <family>霞鹜文楷</family>
          <pointsize>14</pointsize>
          <bold>false</bold>
          <stylestrategy>PreferAntialias</stylestrategy>
@@ -136,6 +143,7 @@
       <widget class="QLabel" name="C5">
        <property name="font">
         <font>
+         <family>霞鹜文楷</family>
          <pointsize>14</pointsize>
          <stylestrategy>PreferAntialias</stylestrategy>
         </font>
@@ -152,6 +160,7 @@
       <widget class="QLabel" name="C6">
        <property name="font">
         <font>
+         <family>霞鹜文楷</family>
          <pointsize>14</pointsize>
          <stylestrategy>PreferAntialias</stylestrategy>
         </font>
@@ -168,6 +177,7 @@
       <widget class="QLabel" name="C7">
        <property name="font">
         <font>
+         <family>霞鹜文楷</family>
          <pointsize>14</pointsize>
          <stylestrategy>PreferAntialias</stylestrategy>
         </font>
@@ -184,6 +194,7 @@
       <widget class="QLabel" name="BB2">
        <property name="font">
         <font>
+         <family>霞鹜文楷</family>
          <pointsize>14</pointsize>
          <stylestrategy>PreferAntialias</stylestrategy>
         </font>
@@ -209,6 +220,7 @@
        </property>
        <property name="font">
         <font>
+         <family>霞鹜文楷</family>
          <pointsize>14</pointsize>
          <stylestrategy>PreferAntialias</stylestrategy>
         </font>
