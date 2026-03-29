@@ -69,7 +69,6 @@ int MainWindow::weekNow(QDateEdit *l){
     int c=in2.readAll().toInt();
     file2.close();
     total+=c;
-    qDebug()<<c;
     return total;
 }
 
@@ -136,7 +135,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     QDir p;
     p.mkdir(QCoreApplication::applicationDirPath()+"/config");
-    qDebug()<<QCoreApplication::applicationDirPath();
 
     QFile file(QCoreApplication::applicationDirPath()+"/config/TurnOn");
     file.open(QIODevice::ReadOnly | QIODevice::Text);

@@ -15,7 +15,6 @@ void SetLabel(QFile& file,QLabel *l){
     QString content = in.readAll();
     file.close();
     if(content.contains('/')){
-        qDebug()<<MainWindow::weekNow(nullptr);
         QStringList sl=content.split('/');
         if(MainWindow::weekNow(nullptr)%2==0){
             l->setText(sl[1]);
@@ -139,7 +138,7 @@ Schedule::Schedule(QWidget *parent)
 void Schedule::createContextMenu()
 {
     contextMenu = new QMenu(this);
-    QAction *action1 = contextMenu->addAction("打开主窗口");
+    QAction *action1 = contextMenu->addAction("打开设置");
     QAction *action2 = contextMenu->addAction("刷新");
     contextMenu->addSeparator();
     QAction *action3 = contextMenu->addAction("退出");
