@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>106</width>
-    <height>413</height>
+    <width>107</width>
+    <height>456</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -27,8 +27,8 @@
    <string>Form</string>
   </property>
   <property name="windowIcon">
-   <iconset>
-    <normaloff>:/icon/mainIcon.ico</normaloff>:/icon/mainIcon.ico</iconset>
+   <iconset resource="icon.qrc">
+    <normaloff>:/icon/logo.ico</normaloff>:/icon/logo.ico</iconset>
   </property>
   <property name="styleSheet">
    <string notr="true"/>
@@ -42,6 +42,7 @@
         <font>
          <family>霞鹜文楷</family>
          <pointsize>14</pointsize>
+         <bold>false</bold>
          <stylestrategy>PreferAntialias</stylestrategy>
         </font>
        </property>
@@ -59,6 +60,7 @@
         <font>
          <family>霞鹜文楷</family>
          <pointsize>14</pointsize>
+         <bold>false</bold>
          <stylestrategy>PreferAntialias</stylestrategy>
         </font>
        </property>
@@ -76,6 +78,7 @@
         <font>
          <family>霞鹜文楷</family>
          <pointsize>14</pointsize>
+         <bold>false</bold>
          <stylestrategy>PreferAntialias</stylestrategy>
         </font>
        </property>
@@ -93,6 +96,7 @@
         <font>
          <family>霞鹜文楷</family>
          <pointsize>14</pointsize>
+         <bold>false</bold>
          <stylestrategy>PreferAntialias</stylestrategy>
         </font>
        </property>
@@ -110,6 +114,7 @@
         <font>
          <family>霞鹜文楷</family>
          <pointsize>14</pointsize>
+         <bold>false</bold>
          <stylestrategy>PreferAntialias</stylestrategy>
         </font>
        </property>
@@ -145,6 +150,7 @@
         <font>
          <family>霞鹜文楷</family>
          <pointsize>14</pointsize>
+         <bold>false</bold>
          <stylestrategy>PreferAntialias</stylestrategy>
         </font>
        </property>
@@ -162,6 +168,7 @@
         <font>
          <family>霞鹜文楷</family>
          <pointsize>14</pointsize>
+         <bold>false</bold>
          <stylestrategy>PreferAntialias</stylestrategy>
         </font>
        </property>
@@ -179,6 +186,7 @@
         <font>
          <family>霞鹜文楷</family>
          <pointsize>14</pointsize>
+         <bold>false</bold>
          <stylestrategy>PreferAntialias</stylestrategy>
         </font>
        </property>
@@ -196,6 +204,7 @@
         <font>
          <family>霞鹜文楷</family>
          <pointsize>14</pointsize>
+         <bold>false</bold>
          <stylestrategy>PreferAntialias</stylestrategy>
         </font>
        </property>
@@ -222,6 +231,7 @@
         <font>
          <family>霞鹜文楷</family>
          <pointsize>14</pointsize>
+         <bold>false</bold>
          <stylestrategy>PreferAntialias</stylestrategy>
         </font>
        </property>
@@ -237,6 +247,8 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="icon.qrc"/>
+ </resources>
  <connections/>
 </ui>

@@ -1,10 +1,13 @@
 #ifndef SCHEDULE_H
 #define SCHEDULE_H
 
+#include "qpropertyanimation.h"
+#include "qpushbutton.h"
 #include <QWidget>
 #include <QAction>
 #include <QMenu>
 #include <QPoint>
+#include <QGraphicsEffect>
 
 class MainWindow;
 
@@ -35,13 +38,23 @@ private slots:
 
 protected:
     void closeEvent(QCloseEvent *event) override;
+    void paintEvent(QPaintEvent *event) override;
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
 
 private:
     Ui::Schedule *ui;
+    QPoint m_dragP;
+    bool m_bDragging;
     QMenu *contextMenu=nullptr;
     void createContextMenu();
     QTimer *timer_update;
     MainWindow *m_mainwindow;
+    QPushButton *closeB=nullptr;
+    QGraphicsOpacityEffect *e = new QGraphicsOpacityEffect(closeB);
+    QPropertyAnimation *anim = new QPropertyAnimation(e,"opacity");
+    QPropertyAnimation *anim2 = new QPropertyAnimation(e,"opacity");
 };
 
 #endif // SCHEDULE_H
