@@ -55,6 +55,11 @@ private:
     QGraphicsOpacityEffect *e = new QGraphicsOpacityEffect(closeB);
     QPropertyAnimation *anim = new QPropertyAnimation(e,"opacity");
     QPropertyAnimation *anim2 = new QPropertyAnimation(e,"opacity");
+    bool m_pressing=0;
+    QPoint firstPos;
+    void setShadow();
+    void recordWindowSize();
+    void SetWindowSize();
 };
 
 #endif // SCHEDULE_H

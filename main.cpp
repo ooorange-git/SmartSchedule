@@ -26,9 +26,10 @@ int main(int argc, char *argv[])
     MainWindow w;
     QScreen *primaryScreen = QGuiApplication::primaryScreen();
     QRect screenGeometry = primaryScreen->geometry();
-    int x = screenGeometry.width()-160;
-    int y = (screenGeometry.height()-419)/2;
+
     Schedule s;
+    int x = screenGeometry.width()-s.width();
+    int y = (screenGeometry.height()-s.height())/2;
     s.move(x,y);
     s.SetMain(&w);
     s.show();

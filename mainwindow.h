@@ -22,6 +22,7 @@ public:
     static int goodDay();
     static int weekNow(QDateEdit *l);
     void showWeek();
+    void setLineEdit(QLineEdit *l);
     void setSchedule(Schedule *s){ m_s=s;};
     ~MainWindow();
 
@@ -31,88 +32,9 @@ public slots:
 
 
 private slots:
+    void SetSchedule(const QString &text);
 
     void on_TurnOn_clicked(bool checked);
-
-    void on_L11_textEdited(const QString &arg1);
-
-    void on_L12_textEdited(const QString &arg1);
-
-    void on_L13_textEdited(const QString &arg1);
-
-    void on_L14_textEdited(const QString &arg1);
-
-    void on_L15_textEdited(const QString &arg1);
-
-    void on_L16_textEdited(const QString &arg1);
-
-    void on_L17_textEdited(const QString &arg1);
-
-    void on_L18_textEdited(const QString &arg1);
-
-    void on_L21_textEdited(const QString &arg1);
-
-    void on_L22_textEdited(const QString &arg1);
-
-    void on_L23_textEdited(const QString &arg1);
-
-    void on_L24_textEdited(const QString &arg1);
-
-    void on_L25_textEdited(const QString &arg1);
-
-    void on_L26_textEdited(const QString &arg1);
-
-    void on_L27_textEdited(const QString &arg1);
-
-    void on_L28_textEdited(const QString &arg1);
-
-    void on_L31_textEdited(const QString &arg1);
-
-    void on_L32_textEdited(const QString &arg1);
-
-    void on_L33_textEdited(const QString &arg1);
-
-    void on_L34_textEdited(const QString &arg1);
-
-    void on_L35_textEdited(const QString &arg1);
-
-    void on_L36_textEdited(const QString &arg1);
-
-    void on_L37_textEdited(const QString &arg1);
-
-    void on_L38_textEdited(const QString &arg1);
-
-    void on_L41_textEdited(const QString &arg1);
-
-    void on_L42_textEdited(const QString &arg1);
-
-    void on_L43_textEdited(const QString &arg1);
-
-    void on_L44_textEdited(const QString &arg1);
-
-    void on_L45_textEdited(const QString &arg1);
-
-    void on_L46_textEdited(const QString &arg1);
-
-    void on_L47_textEdited(const QString &arg1);
-
-    void on_L48_textEdited(const QString &arg1);
-
-    void on_L51_textEdited(const QString &arg1);
-
-    void on_L52_textEdited(const QString &arg1);
-
-    void on_L53_textEdited(const QString &arg1);
-
-    void on_L54_textEdited(const QString &arg1);
-
-    void on_L55_textEdited(const QString &arg1);
-
-    void on_L56_textEdited(const QString &arg1);
-
-    void on_L57_textEdited(const QString &arg1);
-
-    void on_L58_textEdited(const QString &arg1);
 
     void on_checkBox_clicked(bool checked);
 

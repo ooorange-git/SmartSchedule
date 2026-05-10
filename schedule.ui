@@ -30,6 +30,9 @@
    <iconset resource="icon.qrc">
     <normaloff>:/icon/logo.ico</normaloff>:/icon/logo.ico</iconset>
   </property>
+  <property name="windowOpacity">
+   <double>0.960000000000000</double>
+  </property>
   <property name="styleSheet">
    <string notr="true"/>
   </property>
@@ -38,6 +41,12 @@
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
       <widget class="QLabel" name="C1">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="font">
         <font>
          <family>霞鹜文楷</family>
@@ -56,6 +65,12 @@
      </item>
      <item>
       <widget class="QLabel" name="BB1">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="font">
         <font>
          <family>霞鹜文楷</family>
@@ -74,6 +89,12 @@
      </item>
      <item>
       <widget class="QLabel" name="C2">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="font">
         <font>
          <family>霞鹜文楷</family>
@@ -92,6 +113,12 @@
      </item>
      <item>
       <widget class="QLabel" name="C3">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="font">
         <font>
          <family>霞鹜文楷</family>
@@ -110,6 +137,12 @@
      </item>
      <item>
       <widget class="QLabel" name="C4">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="font">
         <font>
          <family>霞鹜文楷</family>
@@ -128,6 +161,12 @@
      </item>
      <item>
       <widget class="QLabel" name="Noon">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="font">
         <font>
          <family>霞鹜文楷</family>
@@ -146,6 +185,12 @@
      </item>
      <item>
       <widget class="QLabel" name="C5">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="font">
         <font>
          <family>霞鹜文楷</family>
@@ -164,6 +209,12 @@
      </item>
      <item>
       <widget class="QLabel" name="C6">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="font">
         <font>
          <family>霞鹜文楷</family>
@@ -182,6 +233,12 @@
      </item>
      <item>
       <widget class="QLabel" name="C7">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="font">
         <font>
          <family>霞鹜文楷</family>
@@ -200,6 +257,12 @@
      </item>
      <item>
       <widget class="QLabel" name="BB2">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="font">
         <font>
          <family>霞鹜文楷</family>
@@ -220,6 +283,12 @@
       <widget class="QLabel" name="C8">
        <property name="enabled">
         <bool>true</bool>
+       </property>
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
        </property>
        <property name="minimumSize">
         <size>

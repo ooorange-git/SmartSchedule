@@ -14,6 +14,55 @@
 #include <QPainterPath>
 #include <QPropertyAnimation>
 #include <QGraphicsEffect>
+#include <QDir>
+
+//path格式为/xxx/xxx
+QString readFile(QString path){
+    QFile file(QCoreApplication::applicationDirPath()+path);
+    file.open(QIODevice::ReadOnly | QIODevice::Text);
+    QTextStream out(&file);
+    QString content = out.readAll();
+    file.close();
+    return content;
+}
+
+void writeFile(QString path,QString content){
+    QFile file(QCoreApplication::applicationDirPath()+path);
+    file.open(QIODevice::WriteOnly | QIODevice::Text);
+    QTextStream out(&file);
+    out<<content;
+    file.close();
+}
+
+void Schedule::recordWindowSize(){
+    QDir p;
+    p.mkdir(QCoreApplication::applicationDirPath()+"/config/geometry");
+    int x=this->pos().x();
+    int y=this->pos().y();
+    int width=this->width();
+    int height=this->height();
+    writeFile("/geometry/x",QString::number(x));
+    writeFile("/geometry/y",QString::number(y));
+    writeFile("/geometry/w",QString::number(width));
+    writeFile("/geometry/h",QString::number(height));
+}
+
+void Schedule::SetWindowSize(){
+    int x=readFile("/geometry/x").toInt();
+    int y=readFile("/geometry/y").toInt();
+    int w=readFile("/geometry/w").toInt();
+    int h=readFile("/geometry/h").toInt();
+    if (w <= 0) w = 148;
+    if (h <= 0) h = 497;
+    this->setGeometry(x,y,w,h);
+}
+
+void Schedule::setShadow(){
+    QGraphicsDropShadowEffect *shadow = new QGraphicsDropShadowEffect(this);
+    shadow->setOffset(0,5);
+    shadow->setBlurRadius(10);
+    this->setGraphicsEffect(shadow);
+}
 
 void Schedule::paintEvent(QPaintEvent *event){
     Q_UNUSED(event);
@@ -24,26 +73,51 @@ void Schedule::paintEvent(QPaintEvent *event){
     QPainterPath path;
     path.addRoundedRect(rect(),10,10);
     painter.fillPath(path,QColor(255,255,255));
+    painter.setPen(QPen(Qt::gray, 1));
+    painter.drawPath(path);
 }
 
 void Schedule::mousePressEvent(QMouseEvent *event){
-    if((event->button()==Qt::LeftButton) && ((event->pos().y())<30)){
+    if((event->button()==Qt::LeftButton) && (event->pos().y()<30)){
         m_bDragging=1;
         m_dragP = event->globalPos() - frameGeometry().topLeft();
-        event->accept();
     }
+
+    if((event->button()==Qt::LeftButton) && (event->pos().y()>height()-10) && (event->pos().x()<10)){
+        m_pressing=1;
+        firstPos = event->globalPos();
+    }
+
+    event->accept();
 }
 
 void Schedule::mouseMoveEvent(QMouseEvent *event){
     if(anim->state()!=QAbstractAnimation::Running && e->opacity()!=1.0){
         anim->start();
-        QTimer::singleShot(5000,[this]{anim2->start();});
+        QTimer::singleShot(10000,[this]{anim2->start();});
     }
 
     if(m_bDragging && (event->buttons() & Qt::LeftButton)){
         move(event->globalPos()-m_dragP);
     }
 
+    if((event->pos().y()>height()-10) && (event->pos().x()<10)){
+        if(this->cursor().shape() != Qt::SizeBDiagCursor){
+            this->setCursor(Qt::SizeBDiagCursor);
+        }
+    }else{
+        this->setCursor(Qt::ArrowCursor);
+    }
+
+    if(m_pressing){
+        int x_change = firstPos.x()-event->globalX();
+        int y_change = event->globalY()-firstPos.y();
+        this->setGeometry(this->pos().x()-x_change,this->pos().y(),width()+x_change,height()+y_change);
+        closeB->move(width()-37,7);
+        firstPos = event->globalPos();
+    }
+
+    recordWindowSize();
 
     event->accept();
 }
@@ -51,8 +125,8 @@ void Schedule::mouseMoveEvent(QMouseEvent *event){
 void Schedule::mouseReleaseEvent(QMouseEvent *event){
     if(event->button()==Qt::LeftButton){
         m_bDragging=0;
-        event->accept();
-    }
+        m_pressing=0;
+    }event->accept();
 }
 
 void SetLabel(QFile& file,QLabel *l){
@@ -115,7 +189,6 @@ void Schedule::weekday(int d){
 }
 
 void Schedule::weekEnd(){
-    this->resize(141,456);
     QLabel* c[8]={ui->C1,ui->C2,ui->C3,ui->C4,ui->C5,ui->C6,ui->C7,ui->C8};
     c[1]->setText("今");
     ui->Noon->setText("天");
@@ -159,17 +232,15 @@ Schedule::Schedule(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::Schedule)
 {
+    QApplication::restoreOverrideCursor();
     ui->setupUi(this);
     this->setMouseTracking(1);
 
     setAttribute(Qt::WA_TranslucentBackground);
-
     setWindowFlags(Qt::FramelessWindowHint);
-    setWindowTitle(" ");
-    QPalette pal = this->palette();
-    pal.setColor(QPalette::Window,QColor("#FFFFFF"));
-    this->setPalette(pal);
-    this->setAutoFillBackground(1);
+    setAttribute(Qt::WA_ShowWithoutActivating);
+    setWindowTitle("课程表");
+    SetWindowSize();
 
     anim->setDuration(1000);
     anim->setStartValue(0.0);
@@ -181,11 +252,12 @@ Schedule::Schedule(QWidget *parent)
     anim2->setEndValue(0.0);
 
     //关闭按钮
-    closeB=new QPushButton("×",this);
+    closeB = new QPushButton("×",this);
+    closeB->setStyleSheet("QPushButton:hover{background:qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #FF8E55, stop:1 #FF4526);border-radius:4px;border:none} QPushButton{background-color:#FFFFFF;border:none}");
     closeB->setGraphicsEffect(e);
     e->setOpacity(0.0);
     closeB->setFixedSize(30,30);
-    closeB->move(width()-5,7);
+    closeB->move(width()-37,7);
     connect(closeB,&QPushButton::clicked,this,&QWidget::close);
 
     //右键菜单
@@ -195,6 +267,7 @@ Schedule::Schedule(QWidget *parent)
 
     //设置课程
     updateLabel();
+
 
     timer_update = new QTimer(this);
     connect(timer_update,&QTimer::timeout,this,&Schedule::updateLabel);
