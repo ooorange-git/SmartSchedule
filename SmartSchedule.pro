@@ -1,5 +1,6 @@
 QT       += core gui
 QT       += widgets
+QT       += network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -22,6 +23,8 @@ HEADERS += \
 FORMS += \
     mainwindow.ui \
     schedule.ui
+
+LIBS += -ldwmapi
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

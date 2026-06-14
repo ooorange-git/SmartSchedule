@@ -15,9 +15,114 @@
 #include <QPropertyAnimation>
 #include <QGraphicsEffect>
 #include <QDir>
+#include <QGraphicsScene>
+#include <QGraphicsPixmapItem>
+#include <QGuiApplication>
+#include <QScreen>
+#include <QOperatingSystemVersion>
+#include <QThread>
+#include <windows.h>
+#include <dwmapi.h>
 
+enum WINDOWCOMPOSITIONATTRIB {
+    WCA_ACCENT_POLICY=19,
+};
+
+enum ACCENT_STATE {
+    ACCENT_DISABLED = 0,
+    ACCENT_ENABLE_GRADIENT = 1,
+    ACCENT_ENABLE_TRANSPARENTGRADIENT = 2,
+    ACCENT_ENABLE_BLURBEHIND = 3,          // 经典毛玻璃
+    ACCENT_ENABLE_ACRYLICBLURBEHIND = 4,   // Win10 1803+ 亚克力效果
+    ACCENT_ENABLE_HOSTBACKDROP = 5         // 更现代的云母效果
+};
+
+typedef struct _ACCENT_POLICY {
+    ACCENT_STATE AccentState;
+    DWORD        AccentFlags;
+    DWORD        GradientColor;
+    DWORD        AnimationId;
+} ACCENT_POLICY, *PACCENT_POLICY;
+
+typedef struct _WINDOWCOMPOSITIONATTRIBDATA {
+    WINDOWCOMPOSITIONATTRIB Attrib;
+    PVOID                   pvData;
+    UINT                    cbData;
+} WINDOWCOMPOSITIONATTRIBDATA, *PWINDOWCOMPOSITIONATTRIBDATA;
+
+typedef BOOL (WINAPI *pfnSetWindowCompositionAttribute)(
+    HWND hwnd,
+    const WINDOWCOMPOSITIONATTRIBDATA* pwcad
+);
+
+bool Schedule::enableSetWindowCompositionAttribute(){
+    HWND hwnd = reinterpret_cast<HWND>(this->winId());
+    HMODULE hUser32 = GetModuleHandleW(L"user32.dll");
+    if (!hUser32) {
+        // 加载失败 NO!
+        return 0;
+    }
+    auto SetWindowCompositionAttribute = reinterpret_cast<pfnSetWindowCompositionAttribute>(GetProcAddress(hUser32,"SetWindowCompositionAttribute"));
+    if(!SetWindowCompositionAttribute){
+        //梅开二度
+        return 0;
+    }
+
+    ACCENT_POLICY ac;
+    ac.AnimationId = 0;
+    ac.AccentState = ACCENT_ENABLE_ACRYLICBLURBEHIND;
+    ac.AccentFlags = 0x20 | 0x40 | 0x80;
+    ac.GradientColor = 0x20202020;
+
+    WINDOWCOMPOSITIONATTRIBDATA wcd;
+    wcd.Attrib=WCA_ACCENT_POLICY;
+    wcd.cbData=sizeof(ac);
+    wcd.pvData=&ac;
+
+    return SetWindowCompositionAttribute(hwnd,&wcd);
+}
+
+bool Schedule::enableBlurBehindWindow() {
+    HWND hwnd = reinterpret_cast<HWND>(this->winId());
+    if (!hwnd) return false;
+
+    DWM_BLURBEHIND blurBehind = {0,0,0,0};
+    blurBehind.dwFlags = DWM_BB_ENABLE;
+    blurBehind.fEnable = true;
+    blurBehind.hRgnBlur = NULL;
+
+    HRESULT hr = DwmEnableBlurBehindWindow(hwnd, &blurBehind);
+    return SUCCEEDED(hr);
+}
+
+void Schedule::setBackground(){
+    QString wallPaperPath = QDir::homePath()+"/AppData/Roaming/Microsoft/Windows/Themes/TranscodedWallpaper";
+    QImage wallPaper = QImage(wallPaperPath);
+    int w = QGuiApplication::primaryScreen()->geometry().width();
+    int h = QGuiApplication::primaryScreen()->geometry().height();
+    wallPaper = wallPaper.scaled(w+40,h+40,Qt::IgnoreAspectRatio,Qt::FastTransformation);
+    if(wallPaper.isNull()){
+        qDebug()<<"啊没有壁纸啊";
+        BluredWallPaper = QPixmap();
+        return;
+    }
+    QPixmap wallPaperPix = QPixmap::fromImage(wallPaper);
+
+    QGraphicsScene sc;
+    QGraphicsPixmapItem item(wallPaperPix);
+    sc.addItem(&item);
+
+    QGraphicsBlurEffect e;
+    e.setBlurRadius(100);
+    item.setGraphicsEffect(&e);
+
+    BluredWallPaper = QPixmap(wallPaper.size());
+    BluredWallPaper.fill(Qt::transparent);
+    QPainter p(&BluredWallPaper);
+    sc.render(&p);
+}
 //path格式为/xxx/xxx
-QString readFile(QString path){
+QString Schedule::readFile(QString path){
     QFile file(QCoreApplication::applicationDirPath()+path);
     file.open(QIODevice::ReadOnly | QIODevice::Text);
     QTextStream out(&file);
@@ -34,47 +139,28 @@ void writeFile(QString path,QString content){
     file.close();
 }
 
-void Schedule::recordWindowSize(){
-    QDir p;
-    p.mkdir(QCoreApplication::applicationDirPath()+"/config/geometry");
-    int x=this->pos().x();
-    int y=this->pos().y();
-    int width=this->width();
-    int height=this->height();
-    writeFile("/geometry/x",QString::number(x));
-    writeFile("/geometry/y",QString::number(y));
-    writeFile("/geometry/w",QString::number(width));
-    writeFile("/geometry/h",QString::number(height));
-}
-
-void Schedule::SetWindowSize(){
-    int x=readFile("/geometry/x").toInt();
-    int y=readFile("/geometry/y").toInt();
-    int w=readFile("/geometry/w").toInt();
-    int h=readFile("/geometry/h").toInt();
-    if (w <= 0) w = 148;
-    if (h <= 0) h = 497;
-    this->setGeometry(x,y,w,h);
-}
-
-void Schedule::setShadow(){
-    QGraphicsDropShadowEffect *shadow = new QGraphicsDropShadowEffect(this);
-    shadow->setOffset(0,5);
-    shadow->setBlurRadius(10);
-    this->setGraphicsEffect(shadow);
-}
 
 void Schedule::paintEvent(QPaintEvent *event){
-    Q_UNUSED(event);
-    QPainter painter(this);
-
-    painter.setRenderHint(QPainter::Antialiasing,true);
-
-    QPainterPath path;
-    path.addRoundedRect(rect(),10,10);
-    painter.fillPath(path,QColor(255,255,255));
-    painter.setPen(QPen(Qt::gray, 1));
-    painter.drawPath(path);
+    // QPainter p(this);
+    // int x = this->pos().x();
+    // int y = this->pos().y();
+    // qDebug()<<-x<<-y;
+    // p.drawPixmap(-x,-y,BluredWallPaper);
+    // p.fillRect(rect(), QColor(255, 255, 255, 80));
+    // event->accept();
+    QPainter p(this);
+    if(readFile("/config/blur").toInt()){
+        p.setRenderHint(QPainter::Antialiasing);
+        p.setBrush(QColor(255,255,255,64));
+        p.setPen(Qt::lightGray);
+        p.drawRect(0,0,width(),height()-3);
+    }else{
+        p.setRenderHint(QPainter::Antialiasing);
+        p.setBrush(QColor(0xF0F0F4));
+        p.setPen(Qt::lightGray);
+        p.drawRoundedRect(this->rect(),10,10);
+    }
+    event->accept();
 }
 
 void Schedule::mousePressEvent(QMouseEvent *event){
@@ -91,14 +177,23 @@ void Schedule::mousePressEvent(QMouseEvent *event){
     event->accept();
 }
 
+void Schedule::hideCloseButton(){
+    if(closeB->rect().contains(closeB->mapFromGlobal(QCursor::pos()))){
+        QTimer::singleShot(10000,[this]{hideCloseButton();});
+    }else{
+        anim2->start();
+    }
+}
+
 void Schedule::mouseMoveEvent(QMouseEvent *event){
     if(anim->state()!=QAbstractAnimation::Running && e->opacity()!=1.0){
         anim->start();
-        QTimer::singleShot(10000,[this]{anim2->start();});
+        QTimer::singleShot(10000,[this]{hideCloseButton();});
     }
 
     if(m_bDragging && (event->buttons() & Qt::LeftButton)){
         move(event->globalPos()-m_dragP);
+        this->update();
     }
 
     if((event->pos().y()>height()-10) && (event->pos().x()<10)){
@@ -116,9 +211,6 @@ void Schedule::mouseMoveEvent(QMouseEvent *event){
         closeB->move(width()-37,7);
         firstPos = event->globalPos();
     }
-
-    recordWindowSize();
-
     event->accept();
 }
 
@@ -166,7 +258,7 @@ void Schedule::monday(){
     QLabel* labels[8]={ui->C1,ui->BB1,ui->C3,ui->C4,ui->C5,ui->C6,ui->C7,ui->C8};
     showAll();
     ui->C2->setText("升旗仪式");
-    ui->Noon->setText("午休");
+    ui->Noon->setText("——午休——");
     ui->BB2->setText("双师体育课");
     for(int i=0;i<8;i++){
         QString name=QCoreApplication::applicationDirPath()+"/config/1/"+QString::number(i+1);
@@ -179,7 +271,7 @@ void Schedule::weekday(int d){
     QLabel* labels[8]={ui->C1,ui->C2,ui->C3,ui->C4,ui->C5,ui->C6,ui->C7,ui->C8};
     showAll();
     ui->BB1->setText("大课间");
-    ui->Noon->setText("午休");
+    ui->Noon->setText("——午休——");
     ui->BB2->setText("双师体育课");
     for(int i=0;i<8;i++){
         QString name=QCoreApplication::applicationDirPath()+"/config/"+QString::number(d)+"/"+QString::number(i+1);
@@ -225,6 +317,8 @@ void Schedule::updateLabel(){
     }else{
         weekEnd();
     }
+
+    this->update();
 }
 
 
@@ -240,7 +334,15 @@ Schedule::Schedule(QWidget *parent)
     setWindowFlags(Qt::FramelessWindowHint);
     setAttribute(Qt::WA_ShowWithoutActivating);
     setWindowTitle("课程表");
-    SetWindowSize();
+
+    //setBackground();
+    if(readFile("/config/blur").toInt()){
+        if(QOperatingSystemVersion::current()>=QOperatingSystemVersion::Windows10){
+            enableSetWindowCompositionAttribute();
+        }else{
+            enableBlurBehindWindow();
+        }
+    }
 
     anim->setDuration(1000);
     anim->setStartValue(0.0);
@@ -253,7 +355,7 @@ Schedule::Schedule(QWidget *parent)
 
     //关闭按钮
     closeB = new QPushButton("×",this);
-    closeB->setStyleSheet("QPushButton:hover{background:qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #FF8E55, stop:1 #FF4526);border-radius:4px;border:none} QPushButton{background-color:#FFFFFF;border:none}");
+    closeB->setStyleSheet("QPushButton:hover{background:qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #FF8E55, stop:1 #FF4526);border-radius:4px;border:none} QPushButton{background:none;border:none}");
     closeB->setGraphicsEffect(e);
     e->setOpacity(0.0);
     closeB->setFixedSize(30,30);
@@ -280,11 +382,12 @@ void Schedule::createContextMenu()
     contextMenu = new QMenu(this);
     QAction *action1 = contextMenu->addAction("打开设置");
     QAction *action2 = contextMenu->addAction("刷新");
+    //QAction *action3 = contextMenu->addAction("换课");
     contextMenu->addSeparator();
-    QAction *action3 = contextMenu->addAction("退出");
+    QAction *action4 = contextMenu->addAction("退出");
     connect(action1, &QAction::triggered, this, &Schedule::onMainWindow);
     connect(action2, &QAction::triggered, this, &Schedule::onUpdate);
-    connect(action3, &QAction::triggered, this, &Schedule::onQuit);
+    connect(action4, &QAction::triggered, this, &Schedule::onQuit);
 }
 
 void Schedule::showContextMenu(const QPoint &pos)
@@ -297,12 +400,12 @@ void Schedule::onUpdate(){
 }
 
 void Schedule::onQuit(){
-    qApp->quit();
+    this->close();
 }
 
 void Schedule::onMainWindow(){
     if (m_mainwindow->isMinimized())
-        m_mainwindow->showNormal();  // 从最小化恢复
+        m_mainwindow->showNormal();
     else
         m_mainwindow->show();
     m_mainwindow->raise();

@@ -44,7 +44,10 @@ private slots:
 
     void on_spinBox_textChanged(const QString &arg1);
 
+    void on_comboBox_activated(int index);
+
 private:
+    QString readFile(QString path);
     Schedule *m_s;
     Ui::MainWindow *ui;
 };

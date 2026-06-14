@@ -29,7 +29,8 @@ public:
     void showAll();
     void startDailyTimer();
     void SetMain(MainWindow *w){ m_mainwindow=w; };
-
+    bool enableSetWindowCompositionAttribute();
+    bool enableBlurBehindWindow();
 private slots:
     void showContextMenu(const QPoint &pos);
     void onMainWindow();
@@ -44,6 +45,7 @@ protected:
     void mouseReleaseEvent(QMouseEvent *event) override;
 
 private:
+    QString readFile(QString path);
     Ui::Schedule *ui;
     QPoint m_dragP;
     bool m_bDragging;
@@ -60,6 +62,9 @@ private:
     void setShadow();
     void recordWindowSize();
     void SetWindowSize();
+    QPixmap BluredWallPaper;
+    void setBackground();
+    void hideCloseButton();
 };
 
 #endif // SCHEDULE_H

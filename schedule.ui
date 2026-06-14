@@ -31,7 +31,7 @@
     <normaloff>:/icon/logo.ico</normaloff>:/icon/logo.ico</iconset>
   </property>
   <property name="windowOpacity">
-   <double>0.960000000000000</double>
+   <double>1.000000000000000</double>
   </property>
   <property name="styleSheet">
    <string notr="true"/>
