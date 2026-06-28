@@ -1,22 +1,39 @@
 #include "mainwindow.h"
-#include "qtimer.h"
 #include "ui_mainwindow.h"
 #include "schedule.h"
-#include "qdebug.h"
-#include<QMessageBox>
-#include<QFile>
-#include<QTextStream>
-#include<QSpinBox>
-#include<QCoreApplication>
-#include<QSettings>
-#include<QDir>
-#include<QScreen>
-#include<QRect>
-#include<QLineEdit>
-#include<QDate>
-#include<windows.h>
-#include<dwmapi.h>
+#include <QDebug>
+#include <QTimer>
+#include <QMessageBox>
+#include <QFile>
+#include <QTextStream>
+#include <QSpinBox>
+#include <QCoreApplication>
+#include <QSettings>
+#include <QDir>
+#include <QScreen>
+#include <QRect>
+#include <QLineEdit>
+#include <QDate>
+#include <QProcess>
+#include <windows.h>
+#include <dwmapi.h>
 
+void MainWindow::restart(){
+    if (socket) {
+        socket->close();
+        QLocalServer::removeServer("orange's schedule");
+        socket = nullptr;
+    }
+    QString program = QCoreApplication::applicationFilePath();
+    QStringList arguments = QCoreApplication::arguments();
+    QString workingPath = QDir::currentPath();
+    bool start = QProcess::startDetached(program,arguments,workingPath);
+    if(start){
+        qApp->quit();
+    }else{
+        QMessageBox::critical(this,"……","重启似乎失败了，请手动重启");
+    }
+}
 //格式“/xxx/xx”
 QString MainWindow::readFile(QString path){
     QFile file(QCoreApplication::applicationDirPath()+path);
@@ -130,13 +147,14 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
+    qApp->setStyleSheet("QMessageBox { messagebox-text-interaction-flags: 5; }");
     ui->setupUi(this);
-
     QDir p;
     p.mkdir(QCoreApplication::applicationDirPath()+"/config");
     //设置背景色
     if(readFile("/config/blur").toInt()){
         if(QSysInfo::productVersion() == "6.1"){
+            setAttribute(Qt::WA_NoSystemBackground);
             HWND hwnd = reinterpret_cast<HWND>(this->winId());
             MARGINS margins = {-1,-1,-1,-1};
             DwmExtendFrameIntoClientArea(hwnd, &margins);
@@ -148,6 +166,7 @@ MainWindow::MainWindow(QWidget *parent)
         this->setAutoFillBackground(1);
     }
 
+    ui->aboutButton->setFixedWidth(120);
     turnOn(readFile("/config/TurnOn").toInt());
 
     QCheckBox *turnOn = ui->TurnOn;
@@ -167,6 +186,8 @@ MainWindow::MainWindow(QWidget *parent)
     ui->dateEdit->setDate(QDate::fromString(readFile("/config/startTerm").trimmed(),Qt::ISODate));
 
     ui->spinBox->setValue(readFile("/config/change").trimmed().toInt());
+
+    ui->checkBox_2->setChecked(readFile("/config/useWallpaper").toInt());
 
     for(QLineEdit *edit : findChildren<QLineEdit*>()){
         if(edit->objectName()=="qt_spinbox_lineedit"){
@@ -190,24 +211,23 @@ MainWindow::~MainWindow()
 //关于
 void MainWindow::on_aboutButton_clicked()
 {
-    QMessageBox::information(this,"关于","作者：ooorange\n希望对班级课表有帮助(゜-゜)つロ 干杯~\n版本:Beta1.2\n更新日志:1.全窗口毛玻璃升级，更美观！（更卡！）\n2.封装读写文件系统，读写更高效\n3.修复了当前周数无法正常显示的问题\n4.提高了UI的辨识度\n5.改用思源黑体，更清晰");
+    QMessageBox::information(this,"关于","作者：ooorange\n希望对班级课表有帮助(゜-゜)つロ 干杯~\n版本:Release1.2\n更新日志:1.修复了Win7无法显示设置窗口毛玻璃的问题\n2.优化了设置窗口启动慢的问题\n3.实装壁纸模糊\n4.修复了Beta1.2版本启动位置错误问题\n5.修复了关闭按钮位置错误问题\n6.提升窗口更新频率\n本程序已在Github开源：访问仓库：\nhttps://github.com/ooorange-git/SmartSchedule");
+
 }
 
 
 void MainWindow::on_TurnOn_clicked(bool checked)
 {
+    turnOn(checked);
     QFile file(QCoreApplication::applicationDirPath()+"/config/TurnOn");
     if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         QTextStream out(&file);
         if(checked){
             out << 1;
-            turnOn(1);
         }else{
             out << 0;
-            turnOn(0);
         }
         file.close();
-        QMessageBox::information(this,"设置成功","设置成功，重启程序生效");
     }
     else{
         QMessageBox::warning(this,"错误","设置失败，请检查程序所在的驱动器是否有充足的空间后重试");
@@ -229,6 +249,19 @@ void MainWindow::on_checkBox_clicked(bool checked)
     }
     else{
         QMessageBox::warning(this,"错误","设置失败，请检查程序所在的驱动器是否有充足的空间后重试");
+    }
+    QFile file2(QCoreApplication::applicationDirPath()+"/config/blurCheck");
+    if (file2.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        QTextStream out(&file2);
+        out<<0;
+        file.close();
+    }
+    else{
+        QMessageBox::warning(this,"错误","设置失败，请检查程序所在的驱动器是否有充足的空间后重试");
+    }
+
+    if(QMessageBox::question(this,"Tip:自动重启可能失败，如长期未看到新窗口请手动重启","设置成功，重启程序后生效,是否立即重启？")==QMessageBox::Yes){
+        restart();
     }
 }
 
@@ -288,15 +321,22 @@ void MainWindow::on_spinBox_textChanged(const QString &arg1)
 }
 
 
-void MainWindow::on_comboBox_activated(int index)
+void MainWindow::on_checkBox_2_clicked(bool checked)
 {
-    QFile file(QCoreApplication::applicationDirPath()+"/config/wayToBlur");
+    QFile file(QCoreApplication::applicationDirPath()+"/config/useWallpaper");
     if(file.open(QIODevice::WriteOnly | QIODevice::Text)){
         QTextStream out(&file);
-        out<<index;
+        if(checked){
+            out<<1;
+        }else{
+            out<<0;
+        }
         file.close();
     }else{
-        QMessageBox::warning(this,"一氧化氮！","设置失败，请检查程序所在驱动器是否有足够的存储空间或是否处于系统文件夹等无权限访问文件夹内");
+        QMessageBox::warning(this,"---放大一点 ---嗯对","设置失败，请检查程序所在驱动器是否有足够的存储空间或是否处于系统文件夹等无权限访问文件夹内");
+    }
+    if(QMessageBox::question(this,"Tip:自动重启可能失败，如长期未看到新窗口请手动重启","设置成功，重启程序后生效,是否立即重启？")==QMessageBox::Yes){
+        restart();
     }
 }
 

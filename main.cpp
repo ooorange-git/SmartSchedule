@@ -1,19 +1,21 @@
 #include "mainwindow.h"
 #include "schedule.h"
-#include<QSettings>
-#include<QApplication>
-#include<QGuiApplication>
-#include<QCoreApplication>
-#include<QDir>
-#include<QFile>
-#include<QTextStream>
-#include<QScreen>
-#include<QRect>
-#include<QFontDatabase>
-#include<QDebug>
-#include<QLoggingCategory>
-#include<QLocalSocket>
-#include<QLocalServer>
+#include <QSettings>
+#include <QApplication>
+#include <QGuiApplication>
+#include <QCoreApplication>
+#include <QDir>
+#include <QFile>
+#include <QTextStream>
+#include <QScreen>
+#include <QRect>
+#include <QFontDatabase>
+#include <QDebug>
+#include <QLoggingCategory>
+#include <QLocalSocket>
+#include <QLocalServer>
+#include <QTimer>
+#include <QLayout>
 
 
 int main(int argc, char *argv[])
@@ -44,15 +46,18 @@ int main(int argc, char *argv[])
     a.setFont(df);
 
     MainWindow w;
-    QScreen *primaryScreen = QGuiApplication::primaryScreen();
-    QRect screenGeometry = primaryScreen->geometry();
-
     Schedule s;
-    int x = screenGeometry.width()-s.width();
-    int y = (screenGeometry.height()-s.height())/2;
-    s.move(x,y);
+
     s.SetMain(&w);
     s.show();
     w.setSchedule(&s);
+    w.socket=&server;
+
+    w.winId();
+    w.ensurePolished();
+    if(w.layout()){
+        w.layout()->activate();
+    }
+
     return a.exec();
 }

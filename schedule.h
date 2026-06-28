@@ -29,7 +29,7 @@ public:
     void showAll();
     void startDailyTimer();
     void SetMain(MainWindow *w){ m_mainwindow=w; };
-    bool enableSetWindowCompositionAttribute();
+    static bool enableSetWindowCompositionAttribute(QWidget *w);
     bool enableBlurBehindWindow();
 private slots:
     void showContextMenu(const QPoint &pos);
@@ -43,6 +43,7 @@ protected:
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
+    void resizeEvent(QResizeEvent *event) override;
 
 private:
     QString readFile(QString path);
@@ -65,6 +66,7 @@ private:
     QPixmap BluredWallPaper;
     void setBackground();
     void hideCloseButton();
+    void initPosition();
 };
 
 #endif // SCHEDULE_H

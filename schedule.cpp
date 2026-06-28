@@ -24,6 +24,8 @@
 #include <windows.h>
 #include <dwmapi.h>
 
+int CURRENT_BLUR_SETTING = 0;
+
 enum WINDOWCOMPOSITIONATTRIB {
     WCA_ACCENT_POLICY=19,
 };
@@ -55,8 +57,8 @@ typedef BOOL (WINAPI *pfnSetWindowCompositionAttribute)(
     const WINDOWCOMPOSITIONATTRIBDATA* pwcad
 );
 
-bool Schedule::enableSetWindowCompositionAttribute(){
-    HWND hwnd = reinterpret_cast<HWND>(this->winId());
+bool Schedule::enableSetWindowCompositionAttribute(QWidget *w){
+    HWND hwnd = reinterpret_cast<HWND>(w->winId());
     HMODULE hUser32 = GetModuleHandleW(L"user32.dll");
     if (!hUser32) {
         // 加载失败 NO!
@@ -95,12 +97,21 @@ bool Schedule::enableBlurBehindWindow() {
     return SUCCEEDED(hr);
 }
 
+void Schedule::initPosition(){
+    QScreen *primaryScreen = QGuiApplication::primaryScreen();
+    QRect screenGeometry = primaryScreen->geometry();
+    int x = screenGeometry.width()-width();
+    int y = (screenGeometry.height()-height())/2;
+    move(x,y);
+    closeB->move(width()-37,7);
+}
+
 void Schedule::setBackground(){
     QString wallPaperPath = QDir::homePath()+"/AppData/Roaming/Microsoft/Windows/Themes/TranscodedWallpaper";
     QImage wallPaper = QImage(wallPaperPath);
     int w = QGuiApplication::primaryScreen()->geometry().width();
     int h = QGuiApplication::primaryScreen()->geometry().height();
-    wallPaper = wallPaper.scaled(w+40,h+40,Qt::IgnoreAspectRatio,Qt::FastTransformation);
+    wallPaper = wallPaper.scaled(w+100,h+100,Qt::IgnoreAspectRatio,Qt::FastTransformation);
     if(wallPaper.isNull()){
         qDebug()<<"啊没有壁纸啊";
         BluredWallPaper = QPixmap();
@@ -113,7 +124,7 @@ void Schedule::setBackground(){
     sc.addItem(&item);
 
     QGraphicsBlurEffect e;
-    e.setBlurRadius(100);
+    e.setBlurRadius(95);
     item.setGraphicsEffect(&e);
 
     BluredWallPaper = QPixmap(wallPaper.size());
@@ -141,19 +152,17 @@ void writeFile(QString path,QString content){
 
 
 void Schedule::paintEvent(QPaintEvent *event){
-    // QPainter p(this);
-    // int x = this->pos().x();
-    // int y = this->pos().y();
-    // qDebug()<<-x<<-y;
-    // p.drawPixmap(-x,-y,BluredWallPaper);
-    // p.fillRect(rect(), QColor(255, 255, 255, 80));
-    // event->accept();
     QPainter p(this);
-    if(readFile("/config/blur").toInt()){
+    if(CURRENT_BLUR_SETTING==1){
         p.setRenderHint(QPainter::Antialiasing);
         p.setBrush(QColor(255,255,255,64));
         p.setPen(Qt::lightGray);
         p.drawRect(0,0,width(),height()-3);
+    }else if(CURRENT_BLUR_SETTING==2){
+        int x = this->pos().x();
+        int y = this->pos().y();
+        p.drawPixmap(-x,-y,BluredWallPaper);
+        p.fillRect(rect(), QColor(255, 255, 255, 80));
     }else{
         p.setRenderHint(QPainter::Antialiasing);
         p.setBrush(QColor(0xF0F0F4));
@@ -208,7 +217,6 @@ void Schedule::mouseMoveEvent(QMouseEvent *event){
         int x_change = firstPos.x()-event->globalX();
         int y_change = event->globalY()-firstPos.y();
         this->setGeometry(this->pos().x()-x_change,this->pos().y(),width()+x_change,height()+y_change);
-        closeB->move(width()-37,7);
         firstPos = event->globalPos();
     }
     event->accept();
@@ -221,6 +229,10 @@ void Schedule::mouseReleaseEvent(QMouseEvent *event){
     }event->accept();
 }
 
+void Schedule::resizeEvent(QResizeEvent *event){
+    closeB->move(width()-37,7);
+    event->accept();
+}
 void SetLabel(QFile& file,QLabel *l){
     file.open(QIODevice::ReadOnly | QIODevice::Text);
     QTextStream in(&file);
@@ -317,7 +329,7 @@ void Schedule::updateLabel(){
     }else{
         weekEnd();
     }
-
+    closeB->move(width()-37,7);
     this->update();
 }
 
@@ -334,14 +346,22 @@ Schedule::Schedule(QWidget *parent)
     setWindowFlags(Qt::FramelessWindowHint);
     setAttribute(Qt::WA_ShowWithoutActivating);
     setWindowTitle("课程表");
-
-    //setBackground();
     if(readFile("/config/blur").toInt()){
+        if(!readFile("/config/useWallpaper").toInt()){
+            CURRENT_BLUR_SETTING = 1;
+        }else{
+            CURRENT_BLUR_SETTING = 2;
+        }
+    }
+
+    if(CURRENT_BLUR_SETTING==1){
         if(QOperatingSystemVersion::current()>=QOperatingSystemVersion::Windows10){
-            enableSetWindowCompositionAttribute();
+            enableSetWindowCompositionAttribute(this);
         }else{
             enableBlurBehindWindow();
         }
+    }else if(CURRENT_BLUR_SETTING==2){
+        setBackground();
     }
 
     anim->setDuration(1000);
@@ -359,7 +379,6 @@ Schedule::Schedule(QWidget *parent)
     closeB->setGraphicsEffect(e);
     e->setOpacity(0.0);
     closeB->setFixedSize(30,30);
-    closeB->move(width()-37,7);
     connect(closeB,&QPushButton::clicked,this,&QWidget::close);
 
     //右键菜单
@@ -370,10 +389,11 @@ Schedule::Schedule(QWidget *parent)
     //设置课程
     updateLabel();
 
+    QTimer::singleShot(50,[this]{initPosition();});
 
     timer_update = new QTimer(this);
     connect(timer_update,&QTimer::timeout,this,&Schedule::updateLabel);
-    timer_update->start(10000);
+    timer_update->start(5000);
 
 }
 
@@ -404,6 +424,8 @@ void Schedule::onQuit(){
 }
 
 void Schedule::onMainWindow(){
+    QElapsedTimer timer;
+    timer.start();
     if (m_mainwindow->isMinimized())
         m_mainwindow->showNormal();
     else

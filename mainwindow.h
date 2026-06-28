@@ -4,6 +4,7 @@
 
 #include <QMainWindow>
 #include <QDateEdit>
+#include <QLocalServer>
 
 class Schedule;
 
@@ -25,29 +26,24 @@ public:
     void setLineEdit(QLineEdit *l);
     void setSchedule(Schedule *s){ m_s=s;};
     ~MainWindow();
-
+    void restart();
+    QLocalServer *socket=nullptr;
 
 public slots:
     void on_aboutButton_clicked();
 
-
 private slots:
     void SetSchedule(const QString &text);
-
     void on_TurnOn_clicked(bool checked);
-
     void on_checkBox_clicked(bool checked);
-
     void on_day_textActivated(const QString &arg1);
-
     void on_dateEdit_userDateChanged(const QDate &date);
-
     void on_spinBox_textChanged(const QString &arg1);
-
-    void on_comboBox_activated(int index);
+    void on_checkBox_2_clicked(bool checked);
 
 private:
     QString readFile(QString path);
+
     Schedule *m_s;
     Ui::MainWindow *ui;
 };
