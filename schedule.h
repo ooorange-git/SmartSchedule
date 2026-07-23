@@ -6,6 +6,7 @@
 #include <QWidget>
 #include <QAction>
 #include <QMenu>
+#include <QSystemTrayIcon>
 #include <QPoint>
 #include <QGraphicsEffect>
 
@@ -28,7 +29,7 @@ public:
     void weekEnd();
     void showAll();
     void startDailyTimer();
-    void SetMain(MainWindow *w){ m_mainwindow=w; };
+    void setMainWindow(MainWindow *w){ m_mainwindow=w; };
     static bool enableSetWindowCompositionAttribute(QWidget *w);
     bool enableBlurBehindWindow();
 private slots:
@@ -47,13 +48,14 @@ protected:
 
 private:
     QString readFile(QString path);
+    void writeFile(QString path,QString content);
     Ui::Schedule *ui;
     QPoint m_dragP;
     bool m_bDragging;
     QMenu *contextMenu=nullptr;
     void createContextMenu();
     QTimer *timer_update;
-    MainWindow *m_mainwindow;
+    MainWindow *m_mainwindow=nullptr;
     QPushButton *closeB=nullptr;
     QGraphicsOpacityEffect *e = new QGraphicsOpacityEffect(closeB);
     QPropertyAnimation *anim = new QPropertyAnimation(e,"opacity");
@@ -67,6 +69,9 @@ private:
     void setBackground();
     void hideCloseButton();
     void initPosition();
+    QSystemTrayIcon *m_trayIcon;
+    QMenu *m_trayMenu;
+    void setSystemTrayIcon();
 };
 
 #endif // SCHEDULE_H

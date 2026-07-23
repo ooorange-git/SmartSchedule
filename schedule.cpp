@@ -21,6 +21,7 @@
 #include <QScreen>
 #include <QOperatingSystemVersion>
 #include <QThread>
+#include <QSystemTrayIcon>
 #include <windows.h>
 #include <dwmapi.h>
 
@@ -142,7 +143,7 @@ QString Schedule::readFile(QString path){
     return content;
 }
 
-void writeFile(QString path,QString content){
+void Schedule::writeFile(QString path,QString content){
     QFile file(QCoreApplication::applicationDirPath()+path);
     file.open(QIODevice::WriteOnly | QIODevice::Text);
     QTextStream out(&file);
@@ -150,6 +151,21 @@ void writeFile(QString path,QString content){
     file.close();
 }
 
+void Schedule::setSystemTrayIcon(){
+    m_trayIcon = new QSystemTrayIcon(this);
+    m_trayIcon->setIcon(QIcon(":/icon/logo.ico"));
+    m_trayIcon->setToolTip("智能课程表");
+
+    m_trayIcon->setContextMenu(contextMenu);
+    m_trayIcon->show();
+
+    connect(m_trayIcon,&QSystemTrayIcon::activated,this,[=](QSystemTrayIcon::ActivationReason r){
+        if(r==QSystemTrayIcon::DoubleClick){
+            this->raise();
+            this->activateWindow();
+        }
+    });
+}
 
 void Schedule::paintEvent(QPaintEvent *event){
     QPainter p(this);
@@ -233,6 +249,7 @@ void Schedule::resizeEvent(QResizeEvent *event){
     closeB->move(width()-37,7);
     event->accept();
 }
+
 void SetLabel(QFile& file,QLabel *l){
     file.open(QIODevice::ReadOnly | QIODevice::Text);
     QTextStream in(&file);
@@ -240,7 +257,7 @@ void SetLabel(QFile& file,QLabel *l){
     file.close();
     if(content.contains('/')){
         QStringList sl=content.split('/');
-        if(MainWindow::weekNow(nullptr)%2==0){
+        if(MainWindow::weekNow()%2==0){
             l->setText(sl[1]);
         }else{
             l->setText(sl[0]);
@@ -286,6 +303,9 @@ void Schedule::weekday(int d){
     ui->Noon->setText("——午休——");
     ui->BB2->setText("双师体育课");
     for(int i=0;i<8;i++){
+        // if(QFile::exists(QCoreApplication::applicationDirPath()+"/config/current"+QString::number(d)+"/"+QString::number(i+1))){
+
+        // }
         QString name=QCoreApplication::applicationDirPath()+"/config/"+QString::number(d)+"/"+QString::number(i+1);
         QFile file(name);
         SetLabel(file,labels[i]);
@@ -375,6 +395,7 @@ Schedule::Schedule(QWidget *parent)
 
     //关闭按钮
     closeB = new QPushButton("×",this);
+    closeB->setFocusPolicy(Qt::NoFocus);
     closeB->setStyleSheet("QPushButton:hover{background:qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #FF8E55, stop:1 #FF4526);border-radius:4px;border:none} QPushButton{background:none;border:none}");
     closeB->setGraphicsEffect(e);
     e->setOpacity(0.0);
@@ -385,6 +406,9 @@ Schedule::Schedule(QWidget *parent)
     setContextMenuPolicy(Qt::CustomContextMenu);
     connect(this, &QWidget::customContextMenuRequested,this, &Schedule::showContextMenu);
     createContextMenu();
+
+    //托盘图标
+    setSystemTrayIcon();
 
     //设置课程
     updateLabel();
@@ -424,8 +448,6 @@ void Schedule::onQuit(){
 }
 
 void Schedule::onMainWindow(){
-    QElapsedTimer timer;
-    timer.start();
     if (m_mainwindow->isMinimized())
         m_mainwindow->showNormal();
     else

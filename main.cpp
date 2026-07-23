@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
 
     int fontId2 = QFontDatabase::addApplicationFont(":/font/SourceHanSansSC-Regular.otf");
     QStringList fontFamilies2 = QFontDatabase::applicationFontFamilies(fontId2);
-    qDebug()<<fontFamilies2.first();
+
     QFont df(fontFamilies2.first(),10);
     df.setHintingPreference(QFont::PreferNoHinting);
     df.setStyleStrategy(QFont::PreferAntialias);
@@ -48,9 +48,9 @@ int main(int argc, char *argv[])
     MainWindow w;
     Schedule s;
 
-    s.SetMain(&w);
+    s.setMainWindow(&w);
     s.show();
-    w.setSchedule(&s);
+    w.setScheduleWindow(&s);
     w.socket=&server;
 
     w.winId();

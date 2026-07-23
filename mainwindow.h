@@ -19,32 +19,46 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = nullptr);
     static int goodDay();
-    static int weekNow(QDateEdit *l);
-    void showWeek();
-    void setLineEdit(QLineEdit *l);
-    void setSchedule(Schedule *s){ m_s=s;};
-    ~MainWindow();
+    static int weekNow();
     void restart();
-    QLocalServer *socket=nullptr;
+    MainWindow(QWidget *parent = nullptr);
+    ~MainWindow();
+    void showWeek();
+    void setScheduleWindow(Schedule *s){ m_s=s;};
+    int currentScheduleWeekChange=0;
+    QLocalServer *socket = nullptr;
 
-public slots:
-    void on_aboutButton_clicked();
 
 private slots:
-    void SetSchedule(const QString &text);
+    void setSchedule(const QString &text);
+    void setCurrentSchedule(const QString &text);
+
     void on_TurnOn_clicked(bool checked);
     void on_checkBox_clicked(bool checked);
     void on_day_textActivated(const QString &arg1);
     void on_dateEdit_userDateChanged(const QDate &date);
     void on_spinBox_textChanged(const QString &arg1);
     void on_checkBox_2_clicked(bool checked);
+    void on_pushButton_clicked();
+    void on_pushButton_2_clicked();
+    void on_pushButton_3_clicked();
+    void on_aboutButton_clicked();
+
+    void on_pushButton_4_clicked();
+
+    void on_ifEmpty_activated(int index);
 
 private:
     QString readFile(QString path);
-
-    Schedule *m_s;
+    void writeFile(QString path,QString content);
+    void turnOn(bool is);
+    void setCurrentLineEdit(QLineEdit *l);
+    void recordCurrentScheduleWeek();
+    void setLineEdit(QLineEdit *l);
+    void setCurrentScheduleToolTip();
+    void updateInfo();
+    Schedule *m_s = nullptr;
     Ui::MainWindow *ui;
 };
 
