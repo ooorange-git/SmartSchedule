@@ -250,21 +250,23 @@ void Schedule::resizeEvent(QResizeEvent *event){
     event->accept();
 }
 
-void SetLabel(QFile& file,QLabel *l){
-    file.open(QIODevice::ReadOnly | QIODevice::Text);
-    QTextStream in(&file);
-    QString content = in.readAll();
-    file.close();
-    if(content.contains('/')){
-        QStringList sl=content.split('/');
-        if(MainWindow::weekNow()%2==0){
-            l->setText(sl[1]);
-        }else{
-            l->setText(sl[0]);
-        }
-        return;
-    }
-    l->setText(content);
+//读取逻辑：先读取current文件夹
+void SetLabel(QLabel *l){
+
+    // file.open(QIODevice::ReadOnly | QIODevice::Text);
+    // QTextStream in(&file);
+    // QString content = in.readAll();
+    // file.close();
+    // if(content.contains('/')){
+    //     QStringList sl=content.split('/');
+    //     if(MainWindow::weekNow()%2==0){
+    //         l->setText(sl[1]);
+    //     }else{
+    //         l->setText(sl[0]);
+    //     }
+    //     return;
+    // }
+    // l->setText(content);
 }
 
 
@@ -292,7 +294,7 @@ void Schedule::monday(){
     for(int i=0;i<8;i++){
         QString name=QCoreApplication::applicationDirPath()+"/config/1/"+QString::number(i+1);
         QFile file(name);
-        SetLabel(file,labels[i]);
+        SetLabel(labels[i]);
     }
 }
 
@@ -308,7 +310,7 @@ void Schedule::weekday(int d){
         // }
         QString name=QCoreApplication::applicationDirPath()+"/config/"+QString::number(d)+"/"+QString::number(i+1);
         QFile file(name);
-        SetLabel(file,labels[i]);
+        SetLabel(labels[i]);
     }
 }
 

@@ -41,22 +41,21 @@ private slots:
     void on_spinBox_textChanged(const QString &arg1);
     void on_checkBox_2_clicked(bool checked);
     void on_pushButton_clicked();
-    void on_pushButton_2_clicked();
+    //void on_pushButton_2_clicked();
     void on_pushButton_3_clicked();
     void on_aboutButton_clicked();
-
     void on_pushButton_4_clicked();
-
     void on_ifEmpty_activated(int index);
 
 private:
-    QString readFile(QString path);
+    QString readFile(QString path,bool *ok);
     void writeFile(QString path,QString content);
     void turnOn(bool is);
     void setCurrentLineEdit(QLineEdit *l);
     void recordCurrentScheduleWeek();
     void setLineEdit(QLineEdit *l);
     void setCurrentScheduleToolTip();
+    void deleteOutOfDate(int week,int day);
     void updateInfo();
     Schedule *m_s = nullptr;
     Ui::MainWindow *ui;

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>599</width>
-    <height>661</height>
+    <width>689</width>
+    <height>657</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -1599,7 +1599,7 @@
           </property>
          </widget>
         </item>
-        <item row="10" column="5">
+        <item row="10" column="3">
          <widget class="QPushButton" name="pushButton">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
@@ -1613,22 +1613,6 @@
          </widget>
         </item>
         <item row="10" column="4">
-         <widget class="QPushButton" name="pushButton_2">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="toolTip">
-           <string>该按钮只会清除当前课表</string>
-          </property>
-          <property name="text">
-           <string>清空课表</string>
-          </property>
-         </widget>
-        </item>
-        <item row="10" column="2">
          <widget class="QPushButton" name="pushButton_3">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
@@ -1641,7 +1625,7 @@
           </property>
          </widget>
         </item>
-        <item row="10" column="3">
+        <item row="10" column="5">
          <widget class="QPushButton" name="pushButton_4">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
@@ -1671,7 +1655,7 @@
       <property name="title">
        <string>设置</string>
       </property>
-      <layout class="QGridLayout" name="gridLayout" columnstretch="1,0,0,0,0">
+      <layout class="QGridLayout" name="gridLayout" columnstretch="0,2,0,1,0">
        <item row="1" column="3">
         <widget class="QLabel" name="label">
          <property name="font">

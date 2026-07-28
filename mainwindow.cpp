@@ -28,13 +28,23 @@ void MainWindow::writeFile(QString path,QString content){
     file.close();
 }
 //格式“/xxx/xx”
-QString MainWindow::readFile(QString path){
+QString MainWindow::readFile(QString path,bool *ok=nullptr){
     QFile file(QCoreApplication::applicationDirPath()+path);
-    file.open(QIODevice::ReadOnly | QIODevice::Text);
-    QTextStream out(&file);
-    QString content = out.readAll();
-    file.close();
-    return content.trimmed();
+    if(file.open(QIODevice::ReadOnly | QIODevice::Text)){
+        QTextStream out(&file);
+        QString content = out.readAll();
+        file.close();
+        if(ok){
+            *ok = 1;
+        }
+        return content.trimmed();
+    }else{
+        if(ok){
+           *ok = 0;
+        }
+        return QString();
+    }
+
 }
 
 void MainWindow::restart(){
@@ -231,14 +241,26 @@ void MainWindow::setLineEdit(QLineEdit *l){
 }
 
 void MainWindow::setCurrentLineEdit(QLineEdit *l){
-    QString name=l->objectName();
+    QString name = l->objectName();
     QString path = "/config/current"+name[1]+"/"+name[2];
-    l->setText(readFile(path));
+    bool ok;
+    QString content = readFile(path,&ok);
+    if(ok){
+       l->setText(readFile(path));
+    }else{
+        setLineEdit(l);
+    }
+
 }
 
 void MainWindow::updateInfo(){
     showWeek();
     setCurrentScheduleToolTip();
+}
+
+void MainWindow::deleteOutOfDate(int week,int day){
+    qDebug()<<"我将删除："<<QCoreApplication::applicationDirPath()+"/config/current"+QString::number(week)+"/"+QString::number(day);
+    QFile::remove(QCoreApplication::applicationDirPath()+"/config/current"+QString::number(week)+"/"+QString::number(day));
 }
 
 //=====================构造/析构==================================
@@ -304,14 +326,17 @@ MainWindow::MainWindow(QWidget *parent)
     }
 
     const auto currentChildren = ui->tabWidget->widget(1)->findChildren<QLineEdit*>();
-    bool acSetting = 1;//当前课表表是否过期
+    bool acSetting = 1;//当前课表是否过期
     if(QDate::currentDate().year()>=2026){//当前时间是否可靠
         QString csw=readFile("/config/currentScheduleWeek");
-        if((csw.toInt()<=weekNow()) && (weekNow()<=(csw.toInt()+csw.section("+",1,1).toInt()))){
+        int fCsw = csw.section("+",0,0).toInt();
+        int bCsw = csw.section("+",1,1).toInt();
+        if((fCsw<=weekNow()) && (weekNow()<=fCsw+bCsw)){
             acSetting=1;
         }else{
             acSetting=0;
             for(QLineEdit *edit2 : currentChildren){
+                deleteOutOfDate(edit2->objectName()[1].digitValue(),edit2->objectName()[2].digitValue());
                 edit2->setText(ui->tabWidget->widget(0)->findChild<QLineEdit*>(edit2->objectName().left(3))->text());
             }
         }
@@ -465,7 +490,7 @@ void MainWindow::on_checkBox_2_clicked(bool checked)
     }
 }
 
-
+//同步
 void MainWindow::on_pushButton_clicked()
 {
     int number=0;
@@ -481,40 +506,44 @@ void MainWindow::on_pushButton_clicked()
         if(QMessageBox::question(this,"提示","当前课表内已有内容，是否仍要同步？")==QMessageBox::Yes){
             for(QLineEdit *edit2 : current){
                 edit2->setText(ui->tabWidget->widget(0)->findChild<QLineEdit*>(edit2->objectName().left(3))->text());
+                deleteOutOfDate(edit2->objectName()[1].digitValue(),edit2->objectName()[2].digitValue());
             }
-            ui->tabWidget->setTabToolTip(1,"本周或设置周数内换课后的课表，目前与标准课表相同");
+            ui->tabWidget->setTabToolTip(1,"本周或设置周数内换课后的课表，每周结束自动恢复为标准课程表，目前与标准课表相同");
         }
     }else{
         for(QLineEdit *edit2 : current){
             edit2->setText(ui->tabWidget->widget(0)->findChild<QLineEdit*>(edit2->objectName().left(3))->text());
-            ui->tabWidget->setTabToolTip(1,"本周或设置周数内换课后的课表，目前与标准课表相同");
+            deleteOutOfDate(edit2->objectName()[1].digitValue(),edit2->objectName()[2].digitValue());
+            ui->tabWidget->setTabToolTip(1,"本周或设置周数内换课后的课表，每周结束自动恢复为标准课程表，目前与标准课表相同");
         }
     }
+    QFile::remove(QCoreApplication::applicationDirPath()+"/config/currentScheduleWeek");
 }
 
+//清空
+// void MainWindow::on_pushButton_2_clicked()
+// {
+//     int number=0;
+//     const auto children = ui->tabWidget->widget(1)->findChildren<QLineEdit*>();
+//     for(QLineEdit *edit : children){
+//         if(!edit->text().isEmpty()){
+//             number=1;
+//             break;
+//         }
+//     }
+//     if(number){
+//         if(QMessageBox::question(this,"提示","是否要清空当前课表？")==QMessageBox::Yes){
+//             for(QLineEdit *edit : children){
+//                 deleteOutOfDate(edit->objectName()[1].digitValue(),edit->objectName()[2].digitValue());
+//                 edit->clear();
+//             }
+//             QFile::remove(QCoreApplication::applicationDirPath()+"/config/currentScheduleWeek");
+//             ui->tabWidget->setTabToolTip(1,"本周或设置周数内换课后的课表，目前什么也没有，将使用标准课表");
+//         }
+//     }
+// }
 
-void MainWindow::on_pushButton_2_clicked()
-{
-    int number=0;
-    const auto children = ui->tabWidget->widget(1)->findChildren<QLineEdit*>();
-    for(QLineEdit *edit : children){
-        if(!edit->text().isEmpty()){
-            number=1;
-            break;
-        }
-    }
-    if(number){
-        if(QMessageBox::question(this,"提示","是否要清空当前课表？")==QMessageBox::Yes){
-            for(QLineEdit *edit : children){
-                edit->clear();
-            }
-            QFile::remove(QCoreApplication::applicationDirPath()+"/config/currentScheduleWeek");
-            ui->tabWidget->setTabToolTip(1,"本周或设置周数内换课后的课表，目前什么也没有，将使用标准课表");
-        }
-    }
-}
-
-
+//延续一周
 void MainWindow::on_pushButton_3_clicked()
 {
     int isEmpty=1;
@@ -545,7 +574,7 @@ void MainWindow::on_pushButton_3_clicked()
     }
 }
 
-
+//取消延续
 void MainWindow::on_pushButton_4_clicked()
 {
     currentScheduleWeekChange=0;
