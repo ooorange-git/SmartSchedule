@@ -250,23 +250,48 @@ void Schedule::resizeEvent(QResizeEvent *event){
     event->accept();
 }
 
-//读取逻辑：先读取current文件夹
-void SetLabel(QLabel *l){
+//读取逻辑：先读取current文件夹有就用没有读std
+void Schedule::SetLabel(QLabel *l,int today){
+    QString week = QString::number(MainWindow::goodDay());
+    QString day = QString::number(today);
+    QString path1 = QCoreApplication::applicationDirPath()+"/config/current"+week+"/"+day;
+    QString path2 = QCoreApplication::applicationDirPath()+"/config/"+week+"/"+day;
+    QFile file1(path1);
+    QString content = QString();
+    if(file1.open(QIODevice::ReadOnly | QIODevice::Text)){
+        QTextStream in(&file1);
+        content = in.readAll();
+        file1.close();
+        if(content.isEmpty()){
+            if(readFile("/config/ifEmpty").toInt()==0){
+                QFile file2(path2);
+                file2.open(QIODevice::ReadOnly | QIODevice::Text);
+                QTextStream in2(&file2);
+                content = in2.readAll();
+                file2.close();
+            }else if(readFile("/config/ifEmpty").toInt()==2){
+                content = "无课";
+            }
+        }
+    }else{
+        QFile file2(path2);
+        if(file2.open(QIODevice::ReadOnly | QIODevice::Text)){
+            QTextStream in(&file2);
+            content = in.readAll();
+            file2.close();
+        }
+    }
+    if(content.contains('/')){
+        QStringList sl=content.split('/');
+        if(MainWindow::weekNow()%2==0){
+            l->setText(sl[1]);
+        }else{
+            l->setText(sl[0]);
+        }
+        return;
+    }
 
-    // file.open(QIODevice::ReadOnly | QIODevice::Text);
-    // QTextStream in(&file);
-    // QString content = in.readAll();
-    // file.close();
-    // if(content.contains('/')){
-    //     QStringList sl=content.split('/');
-    //     if(MainWindow::weekNow()%2==0){
-    //         l->setText(sl[1]);
-    //     }else{
-    //         l->setText(sl[0]);
-    //     }
-    //     return;
-    // }
-    // l->setText(content);
+    l->setText(content);
 }
 
 
@@ -292,25 +317,18 @@ void Schedule::monday(){
     ui->Noon->setText("——午休——");
     ui->BB2->setText("双师体育课");
     for(int i=0;i<8;i++){
-        QString name=QCoreApplication::applicationDirPath()+"/config/1/"+QString::number(i+1);
-        QFile file(name);
-        SetLabel(labels[i]);
+        SetLabel(labels[i],i+1);
     }
 }
 
-void Schedule::weekday(int d){
+void Schedule::weekday(){
     QLabel* labels[8]={ui->C1,ui->C2,ui->C3,ui->C4,ui->C5,ui->C6,ui->C7,ui->C8};
     showAll();
     ui->BB1->setText("大课间");
     ui->Noon->setText("——午休——");
     ui->BB2->setText("双师体育课");
     for(int i=0;i<8;i++){
-        // if(QFile::exists(QCoreApplication::applicationDirPath()+"/config/current"+QString::number(d)+"/"+QString::number(i+1))){
-
-        // }
-        QString name=QCoreApplication::applicationDirPath()+"/config/"+QString::number(d)+"/"+QString::number(i+1);
-        QFile file(name);
-        SetLabel(labels[i]);
+        SetLabel(labels[i],i+1);
     }
 }
 
@@ -347,7 +365,7 @@ void Schedule::updateLabel(){
     if(day==1){
         monday();
     }else if(day>=2 && day <=5){
-        weekday(day);
+        weekday();
     }else{
         weekEnd();
     }

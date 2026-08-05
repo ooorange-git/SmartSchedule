@@ -9,6 +9,7 @@
 #include <QSystemTrayIcon>
 #include <QPoint>
 #include <QGraphicsEffect>
+#include <QLabel>
 
 class MainWindow;
 
@@ -25,7 +26,7 @@ public:
     ~Schedule();
     void updateLabel();
     void monday();
-    void weekday(int d);
+    void weekday();
     void weekEnd();
     void showAll();
     void startDailyTimer();
@@ -72,6 +73,7 @@ private:
     QSystemTrayIcon *m_trayIcon;
     QMenu *m_trayMenu;
     void setSystemTrayIcon();
+    void SetLabel(QLabel *l,int today);
 };
 
 #endif // SCHEDULE_H

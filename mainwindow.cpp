@@ -128,6 +128,10 @@ int MainWindow::weekNow(){
     return total;
 }
 
+int MainWindow::currentScheduleWeekChange(){
+    return readFile("/config/currentScheduleWeek").section("+",1,1).toInt();
+}
+
 void MainWindow::turnOn(bool is){
     QString name = QCoreApplication::applicationName();
     QString path = QDir::toNativeSeparators(QCoreApplication::applicationFilePath());
@@ -202,27 +206,41 @@ void MainWindow::setCurrentScheduleToolTip(){
             if(isSame){
                 ui->tabWidget->setTabToolTip(1,"本周或设置周数内换课后的课表，每周结束自动恢复为标准课程表，目前与标准课表相同");
             }else{
-                if(currentScheduleWeekChange==0){
+                if(currentScheduleWeekChange()==0){
                     ui->tabWidget->setTabToolTip(1,"本周(第"+QString::number(weekNow())+"周)换课后的实际课程表,每周结束自动恢复为标准课程表");
                 }else{
-                    ui->tabWidget->setTabToolTip(1,"设置周数内(第"+QString::number(weekNow())+"~"+QString::number(weekNow()+currentScheduleWeekChange)+"周)换课后的实际课程表,每周结束自动恢复为标准课程表");
+                    QString fileContent = readFile("/config/currentScheduleWeek");
+                    QString stdWeek = fileContent.section("+",0,0);
+                    QString change = fileContent.section("+",1,1);
+                    int right = stdWeek.toInt()+change.toInt();
+                    ui->tabWidget->setTabToolTip(1,"设置周数内(第"+stdWeek+"~"+QString::number(right)+"周)换课后的实际课程表,每周结束自动恢复为标准课程表");
                 }
             }
         }
     }
 }
 
-void MainWindow::recordCurrentScheduleWeek(){
-    writeFile("/config/currentScheduleWeek",QString::number(weekNow())+"+"+QString::number(currentScheduleWeekChange));
-    if(weekNow()!=-1){
-        if(currentScheduleWeekChange==0){
-            ui->tabWidget->setTabToolTip(1,"本周(第"+QString::number(weekNow())+"周)换课后的实际课程表,每周结束自动恢复为标准课程表");
-        }else{
-            ui->tabWidget->setTabToolTip(1,"设置周数内(第"+QString::number(weekNow())+"~"+QString::number(weekNow()+currentScheduleWeekChange)+"周)换课后的实际课程表,每周结束自动恢复为标准课程表");
-        }
+
+int MainWindow::recordCurrentScheduleWeek(int changeWeek=0){
+    QString fileContent = readFile("/config/currentScheduleWeek");
+    QString stdWeek = fileContent.section("+",0,0);
+    QString change = fileContent.section("+",1,1);
+    int left = stdWeek.toInt();
+    int right = stdWeek.toInt()+change.toInt();
+    if(!(weekNow()<=right && weekNow()>=left)){//过期
+        qDebug()<<1;
+        writeFile("/config/currentScheduleWeek",QString::number(weekNow())+"+"+QString::number(changeWeek+change.toInt()));
     }else{
-        ui->tabWidget->setTabToolTip(1,"本周或设置周数内换课后的实际课程表,每周结束自动恢复为标准课程表,当前未开学,设置无效");
+        if(changeWeek==-1){//如果change=0
+            qDebug()<<2;
+            writeFile("/config/currentScheduleWeek",QString::number(weekNow())+"+0");
+        }else{
+            qDebug()<<3;
+            writeFile("/config/currentScheduleWeek",stdWeek+"+"+QString::number(changeWeek+change.toInt()));
+        }
     }
+    setCurrentScheduleToolTip();
+    return right+changeWeek;
 }
 
 void MainWindow::showWeek(){
@@ -259,7 +277,6 @@ void MainWindow::updateInfo(){
 }
 
 void MainWindow::deleteOutOfDate(int week,int day){
-    qDebug()<<"我将删除："<<QCoreApplication::applicationDirPath()+"/config/current"+QString::number(week)+"/"+QString::number(day);
     QFile::remove(QCoreApplication::applicationDirPath()+"/config/current"+QString::number(week)+"/"+QString::number(day));
 }
 
@@ -289,7 +306,6 @@ MainWindow::MainWindow(QWidget *parent)
         this->setAutoFillBackground(1);
     }
 
-    currentScheduleWeekChange=readFile("/config/currentScheduleWeek").section("+",1,1).toInt();
     ui->aboutButton->setFixedWidth(120);
     turnOn(readFile("/config/TurnOn").toInt());
 
@@ -344,7 +360,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     for(QLineEdit *edit3 : currentChildren){
         connect(edit3,&QLineEdit::textChanged,this,&MainWindow::setCurrentSchedule);
-        connect(edit3,&QLineEdit::textEdited,this,&MainWindow::recordCurrentScheduleWeek);
+        connect(edit3,&QLineEdit::textEdited,this,[this]() {
+            recordCurrentScheduleWeek();
+        });
         if(acSetting){
             setCurrentLineEdit(edit3);
         }
@@ -566,9 +584,8 @@ void MainWindow::on_pushButton_3_clicked()
     }
 
     if(!(isEmpty || isSame)){
-        currentScheduleWeekChange++;
-        QMessageBox::information(this,"提示","已延续一周至第"+QString::number(weekNow()+currentScheduleWeekChange)+"周");
-        recordCurrentScheduleWeek();
+        QMessageBox::information(this,"提示","已延续一周至第"+QString::number(recordCurrentScheduleWeek(1))+"周");
+        setCurrentScheduleToolTip();
     }else{
         QMessageBox::information(this,"提示","当前课表与标准课表相同或并无内容，设置无效");
     }
@@ -577,8 +594,7 @@ void MainWindow::on_pushButton_3_clicked()
 //取消延续
 void MainWindow::on_pushButton_4_clicked()
 {
-    currentScheduleWeekChange=0;
-    recordCurrentScheduleWeek();
+    recordCurrentScheduleWeek(-1);
     QMessageBox::information(this,"提示","取消成功");
 }
 
@@ -586,5 +602,9 @@ void MainWindow::on_pushButton_4_clicked()
 void MainWindow::on_ifEmpty_activated(int index)
 {
     writeFile("/config/ifEmpty",QString::number(index));
+    m_s->updateLabel();
 }
 
+//下次要改：周数延续不对
+//逻辑：模式1：单周 用户修改时写文件+tooltip 下周过期删
+//2：多周=单周+延续 延续按钮：原本段+1 取消延续：改写为本周+0 过期删（前端严格参考文件）

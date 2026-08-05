@@ -26,7 +26,6 @@ public:
     ~MainWindow();
     void showWeek();
     void setScheduleWindow(Schedule *s){ m_s=s;};
-    int currentScheduleWeekChange=0;
     QLocalServer *socket = nullptr;
 
 
@@ -52,7 +51,8 @@ private:
     void writeFile(QString path,QString content);
     void turnOn(bool is);
     void setCurrentLineEdit(QLineEdit *l);
-    void recordCurrentScheduleWeek();
+    int recordCurrentScheduleWeek(int changeWeek);
+    int currentScheduleWeekChange();
     void setLineEdit(QLineEdit *l);
     void setCurrentScheduleToolTip();
     void deleteOutOfDate(int week,int day);
