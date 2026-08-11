@@ -17,6 +17,7 @@
 #include <QProcess>
 #include <windows.h>
 #include <dwmapi.h>
+#include <physics.h>
 
 //==============乱七八糟业务逻辑===========================
 
@@ -280,6 +281,15 @@ void MainWindow::deleteOutOfDate(int week,int day){
     QFile::remove(QCoreApplication::applicationDirPath()+"/config/current"+QString::number(week)+"/"+QString::number(day));
 }
 
+void MainWindow::aboutButtonMenu(const QPoint &pos){
+    QPoint p = ui->aboutButton->mapToGlobal(pos);
+
+    QMenu m;
+    QAction *a1 = m.addAction("千万别点");
+    connect(a1,&QAction::triggered,this,[this]{m_s->usePhy();});
+    m.exec(p);
+}
+
 //=====================构造/析构==================================
 
 MainWindow::MainWindow(QWidget *parent)
@@ -367,6 +377,9 @@ MainWindow::MainWindow(QWidget *parent)
             setCurrentLineEdit(edit3);
         }
     }
+
+    ui->aboutButton->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(ui->aboutButton,&QPushButton::customContextMenuRequested,this,&MainWindow::aboutButtonMenu);
 
     setCurrentScheduleToolTip();
     showWeek();
@@ -538,28 +551,7 @@ void MainWindow::on_pushButton_clicked()
     QFile::remove(QCoreApplication::applicationDirPath()+"/config/currentScheduleWeek");
 }
 
-//清空
-// void MainWindow::on_pushButton_2_clicked()
-// {
-//     int number=0;
-//     const auto children = ui->tabWidget->widget(1)->findChildren<QLineEdit*>();
-//     for(QLineEdit *edit : children){
-//         if(!edit->text().isEmpty()){
-//             number=1;
-//             break;
-//         }
-//     }
-//     if(number){
-//         if(QMessageBox::question(this,"提示","是否要清空当前课表？")==QMessageBox::Yes){
-//             for(QLineEdit *edit : children){
-//                 deleteOutOfDate(edit->objectName()[1].digitValue(),edit->objectName()[2].digitValue());
-//                 edit->clear();
-//             }
-//             QFile::remove(QCoreApplication::applicationDirPath()+"/config/currentScheduleWeek");
-//             ui->tabWidget->setTabToolTip(1,"本周或设置周数内换课后的课表，目前什么也没有，将使用标准课表");
-//         }
-//     }
-// }
+
 
 //延续一周
 void MainWindow::on_pushButton_3_clicked()
@@ -605,6 +597,3 @@ void MainWindow::on_ifEmpty_activated(int index)
     m_s->updateLabel();
 }
 
-//下次要改：周数延续不对
-//逻辑：模式1：单周 用户修改时写文件+tooltip 下周过期删
-//2：多周=单周+延续 延续按钮：原本段+1 取消延续：改写为本周+0 过期删（前端严格参考文件）

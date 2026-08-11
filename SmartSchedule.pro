@@ -13,11 +13,13 @@ CONFIG += c++17
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
+    physics.cpp \
     schedule.cpp
 
 
 HEADERS += \
     mainwindow.h \
+    physics.h \
     schedule.h
 
 FORMS += \

@@ -1,6 +1,7 @@
 #include "schedule.h"
 #include "ui_schedule.h"
 #include "mainwindow.h"
+#include "physics.h"
 #include <QDate>
 #include <QFile>
 #include <QAction>
@@ -62,12 +63,10 @@ bool Schedule::enableSetWindowCompositionAttribute(QWidget *w){
     HWND hwnd = reinterpret_cast<HWND>(w->winId());
     HMODULE hUser32 = GetModuleHandleW(L"user32.dll");
     if (!hUser32) {
-        // 加载失败 NO!
         return 0;
     }
     auto SetWindowCompositionAttribute = reinterpret_cast<pfnSetWindowCompositionAttribute>(GetProcAddress(hUser32,"SetWindowCompositionAttribute"));
     if(!SetWindowCompositionAttribute){
-        //梅开二度
         return 0;
     }
 
@@ -192,11 +191,17 @@ void Schedule::mousePressEvent(QMouseEvent *event){
     if((event->button()==Qt::LeftButton) && (event->pos().y()<30)){
         m_bDragging=1;
         m_dragP = event->globalPos() - frameGeometry().topLeft();
+        if(p){
+            p->onlyCalc();
+        }
     }
 
     if((event->button()==Qt::LeftButton) && (event->pos().y()>height()-10) && (event->pos().x()<10)){
         m_pressing=1;
         firstPos = event->globalPos();
+        if(p){
+          p->onlyCalc();
+        }
     }
 
     event->accept();
@@ -232,7 +237,9 @@ void Schedule::mouseMoveEvent(QMouseEvent *event){
     if(m_pressing){
         int x_change = firstPos.x()-event->globalX();
         int y_change = event->globalY()-firstPos.y();
-        this->setGeometry(this->pos().x()-x_change,this->pos().y(),width()+x_change,height()+y_change);
+        if((width()+x_change)>165){
+            this->setGeometry(this->pos().x()-x_change,this->pos().y(),width()+x_change,height()+y_change);
+        }
         firstPos = event->globalPos();
     }
     event->accept();
@@ -242,6 +249,9 @@ void Schedule::mouseReleaseEvent(QMouseEvent *event){
     if(event->button()==Qt::LeftButton){
         m_bDragging=0;
         m_pressing=0;
+        if(p){
+            p->start();
+        }
     }event->accept();
 }
 
@@ -373,6 +383,10 @@ void Schedule::updateLabel(){
     this->update();
 }
 
+void Schedule::usePhy(){
+    p = new Physics(this,2);
+    p->start();
+}
 
 Schedule::Schedule(QWidget *parent)
     : QWidget(parent)

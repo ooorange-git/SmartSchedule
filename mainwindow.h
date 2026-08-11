@@ -32,7 +32,7 @@ public:
 private slots:
     void setSchedule(const QString &text);
     void setCurrentSchedule(const QString &text);
-
+    void aboutButtonMenu(const QPoint &pos);
     void on_TurnOn_clicked(bool checked);
     void on_checkBox_clicked(bool checked);
     void on_day_textActivated(const QString &arg1);

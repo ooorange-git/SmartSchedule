@@ -12,6 +12,7 @@
 #include <QLabel>
 
 class MainWindow;
+class Physics;
 
 namespace Ui {
 class Schedule;
@@ -33,6 +34,7 @@ public:
     void setMainWindow(MainWindow *w){ m_mainwindow=w; };
     static bool enableSetWindowCompositionAttribute(QWidget *w);
     bool enableBlurBehindWindow();
+    void usePhy();
 private slots:
     void showContextMenu(const QPoint &pos);
     void onMainWindow();
@@ -53,6 +55,7 @@ private:
     Ui::Schedule *ui;
     QPoint m_dragP;
     bool m_bDragging;
+    bool usingPhy=0;
     QMenu *contextMenu=nullptr;
     void createContextMenu();
     QTimer *timer_update;
@@ -74,6 +77,7 @@ private:
     QMenu *m_trayMenu;
     void setSystemTrayIcon();
     void SetLabel(QLabel *l,int today);
+    Physics *p = nullptr;
 };
 
 #endif // SCHEDULE_H
