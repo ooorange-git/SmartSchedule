@@ -45,7 +45,10 @@ QString MainWindow::readFile(QString path,bool *ok=nullptr){
         }
         return QString();
     }
+}
 
+bool MainWindow::is_exist(QString path){
+    return QFile::exists(QCoreApplication::applicationDirPath()+path);
 }
 
 void MainWindow::restart(){
@@ -108,14 +111,20 @@ int MainWindow::weekNow(){
             }
         }
     }else{
+        QDate d1(2000,1,1);
+        for(;d1!=d2;d1=d1.addDays(1)){
+            if(d1.dayOfWeek()==7){
+                total++;
+            }
+        }
         QFile file2(QCoreApplication::applicationDirPath()+"/config/change");
         if(file2.open(QIODevice::ReadOnly | QIODevice::Text)){
             QTextStream in2(&file2);
             int c=in2.readAll().toInt();
             file2.close();
-            return 1387+c;
+            return total+c;
         }else{
-            return 1387;
+            return total;
         }
     }
     file.close();
@@ -222,7 +231,7 @@ void MainWindow::setCurrentScheduleToolTip(){
 }
 
 
-int MainWindow::recordCurrentScheduleWeek(int changeWeek=0){
+int MainWindow::recordCurrentScheduleWeek(int changeWeek){
     QString fileContent = readFile("/config/currentScheduleWeek");
     QString stdWeek = fileContent.section("+",0,0);
     QString change = fileContent.section("+",1,1);
@@ -289,6 +298,7 @@ void MainWindow::aboutButtonMenu(const QPoint &pos){
     connect(a1,&QAction::triggered,this,[this]{m_s->usePhy();});
     m.exec(p);
 }
+
 
 //=====================构造/析构==================================
 
@@ -404,7 +414,7 @@ void MainWindow::on_aboutButton_clicked()
     aboutBox.setWindowIcon(m_s->windowIcon());
     aboutBox.setIconPixmap(m_s->windowIcon().pixmap(72,72));
     aboutBox.setWindowTitle("关于");
-    aboutBox.setText("作者：ooorange\n希望对班级课表有帮助(゜-゜)つロ 干杯~\n版本:Release1.2\n更新日志:1.修复了Win7无法显示设置窗口毛玻璃的问题\n2.优化了设置窗口启动慢的问题\n3.实装壁纸模糊\n4.修复了Beta1.2版本启动位置错误问题\n5.修复了关闭按钮位置错误问题\n6.提升窗口更新频率\n7.吃了一些巧乐兹\n本程序已在Github开源：访问仓库：\nhttps://github.com/ooorange-git/SmartSchedule");
+    aboutBox.setText("作者：ooorange\n希望对班级课表有帮助(゜-゜)つロ 干杯~\n版本:Beta 1.3.1\n更新日志:1.修复了窗口放大缩小时位移的问题\n2.添加当前课程表，换课后不再需要调整回去\n3.修复了周数显示错误的问题\n4.删除了部分多余按钮\n5.修复若干bug\n6.添加了一个彩蛋\n本程序已在Github开源：访问仓库：\nhttps://github.com/ooorange-git/SmartSchedule");
     aboutBox.setStandardButtons(QMessageBox::Ok);
     aboutBox.exec();
 }

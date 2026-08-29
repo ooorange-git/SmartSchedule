@@ -23,6 +23,7 @@
 #include <QOperatingSystemVersion>
 #include <QThread>
 #include <QSystemTrayIcon>
+#include <QMessageBox>
 #include <windows.h>
 #include <dwmapi.h>
 
@@ -150,6 +151,10 @@ void Schedule::writeFile(QString path,QString content){
     file.close();
 }
 
+bool Schedule::is_exist(QString path){
+    return QFile::exists(QCoreApplication::applicationDirPath()+path);
+}
+
 void Schedule::setSystemTrayIcon(){
     m_trayIcon = new QSystemTrayIcon(this);
     m_trayIcon->setIcon(QIcon(":/icon/logo.ico"));
@@ -237,9 +242,13 @@ void Schedule::mouseMoveEvent(QMouseEvent *event){
     if(m_pressing){
         int x_change = firstPos.x()-event->globalX();
         int y_change = event->globalY()-firstPos.y();
-        if((width()+x_change)>165){
-            this->setGeometry(this->pos().x()-x_change,this->pos().y(),width()+x_change,height()+y_change);
+        qDebug()<<this->minimumWidth();
+        qDebug()<<width()+x_change;
+        if((width()+x_change)>this->minimumWidth()){
+            qDebug()<<"改了";
+            this->setGeometry(this->pos().x()-x_change,this->pos().y(),width()+x_change,height());
         }
+        this->resize(width(),height()+y_change);
         firstPos = event->globalPos();
     }
     event->accept();
@@ -460,11 +469,12 @@ void Schedule::createContextMenu()
     contextMenu = new QMenu(this);
     QAction *action1 = contextMenu->addAction("打开设置");
     QAction *action2 = contextMenu->addAction("刷新");
-    //QAction *action3 = contextMenu->addAction("换课");
+    QAction *action3 = contextMenu->addAction("换课");
     contextMenu->addSeparator();
     QAction *action4 = contextMenu->addAction("退出");
     connect(action1, &QAction::triggered, this, &Schedule::onMainWindow);
     connect(action2, &QAction::triggered, this, &Schedule::onUpdate);
+    connect(action3, &QAction::triggered, this, &Schedule::swapClass);
     connect(action4, &QAction::triggered, this, &Schedule::onQuit);
 }
 
@@ -488,7 +498,42 @@ void Schedule::onMainWindow(){
         m_mainwindow->show();
     m_mainwindow->raise();
     m_mainwindow->activateWindow();
+}
 
+void Schedule::swapClass(){
+    // SwapClassDialog dialog(this,MainWindow::goodDay(),MainWindow::goodDay());
+    // if(dialog.exec()==QDialog::Accepted){
+    //     SwapClassData data = dialog.getData();
+    //     QString std1 = "/config/"+QString::number(data.day1)+"/"+QString::number(data.classN1);
+    //     QString std2 = "/config/"+QString::number(data.day2)+"/"+QString::number(data.classN2);
+    //     QString current1 = "/config/current"+QString::number(data.day1)+"/"+QString::number(data.classN1);
+    //     QString current2 = "/config/current"+QString::number(data.day2)+"/"+QString::number(data.classN2);
+    //     bool e11=is_exist(std1);
+    //     bool e12=is_exist(std2);
+    //     bool e21=is_exist(current1);
+    //     bool e22=is_exist(current2);
+
+    //     if(e21&&e22){
+    //         QString c1 = readFile(current1);
+    //         QString c2 = readFile(current2);
+    //         writeFile(current1,c2);
+    //         writeFile(current2,c1);
+    //     }else{
+    //         if(e11&&e12){
+    //             QString c1 = readFile(std1);
+    //             QString c2 = readFile(std2);
+    //             writeFile(current1,c2);
+    //             writeFile(current2,c1);
+    //         }else{
+    //             QMessageBox::critical(this,"错误","要调换的两节课未设置，无法换课");
+    //         }
+    //     }
+
+    //     m_mainwindow->recordCurrentScheduleWeek();
+    //     updateLabel();
+    // }
+
+    QMessageBox::information(this,"哦不不不","由于该功能逻辑混乱，暂时删除……");
 }
 
 void Schedule::closeEvent(QCloseEvent *event){

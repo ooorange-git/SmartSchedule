@@ -3,6 +3,7 @@
 
 #include "qpropertyanimation.h"
 #include "qpushbutton.h"
+#include "swapclassdialog.h"
 #include <QWidget>
 #include <QAction>
 #include <QMenu>
@@ -35,6 +36,7 @@ public:
     static bool enableSetWindowCompositionAttribute(QWidget *w);
     bool enableBlurBehindWindow();
     void usePhy();
+
 private slots:
     void showContextMenu(const QPoint &pos);
     void onMainWindow();
@@ -52,6 +54,7 @@ protected:
 private:
     QString readFile(QString path);
     void writeFile(QString path,QString content);
+    bool is_exist(QString path);
     Ui::Schedule *ui;
     QPoint m_dragP;
     bool m_bDragging;
@@ -77,6 +80,7 @@ private:
     QMenu *m_trayMenu;
     void setSystemTrayIcon();
     void SetLabel(QLabel *l,int today);
+    void swapClass();
     Physics *p = nullptr;
 };
 

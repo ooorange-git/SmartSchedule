@@ -20,11 +20,13 @@ SOURCES += \
 HEADERS += \
     mainwindow.h \
     physics.h \
-    schedule.h
+    schedule.h \
+    swapclassdialog.h
 
 FORMS += \
     mainwindow.ui \
-    schedule.ui
+    schedule.ui \
+    swapclassdialog.ui
 
 LIBS += -ldwmapi
 

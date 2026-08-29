@@ -27,7 +27,7 @@ public:
     void showWeek();
     void setScheduleWindow(Schedule *s){ m_s=s;};
     QLocalServer *socket = nullptr;
-
+    int recordCurrentScheduleWeek(int changeWeek=0);
 
 private slots:
     void setSchedule(const QString &text);
@@ -40,7 +40,6 @@ private slots:
     void on_spinBox_textChanged(const QString &arg1);
     void on_checkBox_2_clicked(bool checked);
     void on_pushButton_clicked();
-    //void on_pushButton_2_clicked();
     void on_pushButton_3_clicked();
     void on_aboutButton_clicked();
     void on_pushButton_4_clicked();
@@ -49,9 +48,10 @@ private slots:
 private:
     QString readFile(QString path,bool *ok);
     void writeFile(QString path,QString content);
+    bool is_exist(QString path);
     void turnOn(bool is);
     void setCurrentLineEdit(QLineEdit *l);
-    int recordCurrentScheduleWeek(int changeWeek);
+
     int currentScheduleWeekChange();
     void setLineEdit(QLineEdit *l);
     void setCurrentScheduleToolTip();
