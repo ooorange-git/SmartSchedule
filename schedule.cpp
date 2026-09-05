@@ -23,11 +23,12 @@
 #include <QOperatingSystemVersion>
 #include <QThread>
 #include <QSystemTrayIcon>
+#include <QRandomGenerator>
 #include <QMessageBox>
 #include <windows.h>
 #include <dwmapi.h>
 
-int CURRENT_BLUR_SETTING = 0;
+
 
 enum WINDOWCOMPOSITIONATTRIB {
     WCA_ACCENT_POLICY=19,
@@ -107,6 +108,23 @@ void Schedule::initPosition(){
     closeB->move(width()-37,7);
 }
 
+QPixmap Schedule::addNoise(int size){
+    QImage image(size,size,QImage::Format_ARGB32);
+    image.fill(Qt::transparent);
+
+    QRandomGenerator *rg = QRandomGenerator::global();
+
+    for(int i = 0;i < size;i++){
+        QRgb *line = reinterpret_cast<QRgb*>(image.scanLine(i));
+        for(int j = 0;j < size;j++){
+            int gray = rg->bounded(256);
+            line[j] = qRgba(gray,gray,gray,8);
+        }
+    }
+
+    return QPixmap::fromImage(image);
+}
+
 void Schedule::setBackground(){
     QString wallPaperPath = QDir::homePath()+"/AppData/Roaming/Microsoft/Windows/Themes/TranscodedWallpaper";
     QImage wallPaper = QImage(wallPaperPath);
@@ -114,7 +132,6 @@ void Schedule::setBackground(){
     int h = QGuiApplication::primaryScreen()->geometry().height();
     wallPaper = wallPaper.scaled(w+100,h+100,Qt::IgnoreAspectRatio,Qt::FastTransformation);
     if(wallPaper.isNull()){
-        qDebug()<<"啊没有壁纸啊";
         BluredWallPaper = QPixmap();
         return;
     }
@@ -179,10 +196,14 @@ void Schedule::paintEvent(QPaintEvent *event){
         p.setPen(Qt::lightGray);
         p.drawRect(0,0,width(),height()-3);
     }else if(CURRENT_BLUR_SETTING==2){
+        QPainterPath path;
+        path.addRoundedRect(rect(), 10, 10);
+        p.setClipPath(path);
         int x = this->pos().x();
         int y = this->pos().y();
+        p.drawTiledPixmap(rect(),noise);
         p.drawPixmap(-x,-y,BluredWallPaper);
-        p.fillRect(rect(), QColor(255, 255, 255, 80));
+        p.fillRect(rect(), QColor(255, 255, 255, 160));
     }else{
         p.setRenderHint(QPainter::Antialiasing);
         p.setBrush(QColor(0xF0F0F4));
@@ -409,6 +430,8 @@ Schedule::Schedule(QWidget *parent)
     setWindowFlags(Qt::FramelessWindowHint);
     setAttribute(Qt::WA_ShowWithoutActivating);
     setWindowTitle("课程表");
+    setStyleSheet("QWidget { border-radius: 10px; }");
+
     if(readFile("/config/blur").toInt()){
         if(!readFile("/config/useWallpaper").toInt()){
             CURRENT_BLUR_SETTING = 1;
@@ -456,12 +479,17 @@ Schedule::Schedule(QWidget *parent)
     //设置课程
     updateLabel();
 
+    noise = addNoise(100);
+
     QTimer::singleShot(50,[this]{initPosition();});
 
     timer_update = new QTimer(this);
     connect(timer_update,&QTimer::timeout,this,&Schedule::updateLabel);
     timer_update->start(5000);
 
+    QTimer *timer_update_background = new QTimer(this);
+    connect(timer_update_background,&QTimer::timeout,this,&Schedule::setBackground);
+    timer_update_background->start(300000);
 }
 
 void Schedule::createContextMenu()
@@ -469,12 +497,12 @@ void Schedule::createContextMenu()
     contextMenu = new QMenu(this);
     QAction *action1 = contextMenu->addAction("打开设置");
     QAction *action2 = contextMenu->addAction("刷新");
-    QAction *action3 = contextMenu->addAction("换课");
+    //QAction *action3 = contextMenu->addAction("换课");
     contextMenu->addSeparator();
     QAction *action4 = contextMenu->addAction("退出");
     connect(action1, &QAction::triggered, this, &Schedule::onMainWindow);
     connect(action2, &QAction::triggered, this, &Schedule::onUpdate);
-    connect(action3, &QAction::triggered, this, &Schedule::swapClass);
+    //connect(action3, &QAction::triggered, this, &Schedule::swapClass);
     connect(action4, &QAction::triggered, this, &Schedule::onQuit);
 }
 

@@ -1840,6 +1840,9 @@
            <pointsize>10</pointsize>
           </font>
          </property>
+         <property name="toolTip">
+          <string>Windows 7 建议开启该选项</string>
+         </property>
          <property name="text">
           <string>使用获取壁纸代替系统毛玻璃</string>
          </property>

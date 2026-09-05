@@ -10,11 +10,12 @@
 #include <QGuiApplication>
 #include <QScreen>
 
+class Schedule;
 class Physics : public QObject
 {
     Q_OBJECT
 public:
-    explicit Physics(QWidget *parent,float t_cof);
+    explicit Physics(Schedule *parent,float t_cof);
     float v1=0;
     float v2=0;
     float f1=0;
@@ -30,8 +31,7 @@ public:
     void onlyCalc();
     void stop();
 private:
-    QTimer *timer;
-    QWidget *m_parent=nullptr;
+    Schedule *m_parent=nullptr;
     int t;
     int enable = 0;
     void updatePos();

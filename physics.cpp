@@ -1,4 +1,5 @@
 #include "physics.h"
+#include "schedule.h"
 
 void Physics::start(){
     enable = 2;
@@ -73,8 +74,24 @@ void Physics::move(){
     v1-=a1;
     v2-=a2;
     QPoint p = m_parent->pos();
+    int ww = m_parent->width();
+    int wh = m_parent->height();
+    int sw = QGuiApplication::primaryScreen()->availableGeometry().width();
+    int sh = QGuiApplication::primaryScreen()->availableGeometry().height();
     QPointF pf(p.x()+v1,p.y()+v2);
+    if(pf.x()<0){
+        pf.setX(0);
+    }if(pf.x()>sw-ww){
+        pf.setX(sw-ww);
+    }if(pf.y()<0){
+        pf.setY(0);
+    }if(pf.y()>sh-wh){
+        pf.setY(sh-wh);
+    }
     m_parent->move(pf.toPoint());
+    if(m_parent->CURRENT_BLUR_SETTING==2){
+        m_parent->update();
+    }
 }
 
 void Physics::updatePhysics(){
@@ -95,12 +112,12 @@ void Physics::updatePhysics(){
     }
 }
 
-Physics::Physics(QWidget *parent,float t_cof): QObject{parent},cof(t_cof)
+Physics::Physics(Schedule *parent,float t_cof): QObject{parent},cof(t_cof)
 {
     if(parent){
         m_parent = parent;
-        timer = new QTimer(this);
-        connect(timer,&QTimer::timeout,this,&Physics::updatePhysics);
-        timer->start(20);
+        QTimer *timer_phy = new QTimer(this);
+        connect(timer_phy,&QTimer::timeout,this,&Physics::updatePhysics);
+        timer_phy->start(20);
     }
 }

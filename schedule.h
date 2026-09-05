@@ -36,6 +36,7 @@ public:
     static bool enableSetWindowCompositionAttribute(QWidget *w);
     bool enableBlurBehindWindow();
     void usePhy();
+    int CURRENT_BLUR_SETTING = 0;
 
 private slots:
     void showContextMenu(const QPoint &pos);
@@ -73,7 +74,9 @@ private:
     void recordWindowSize();
     void SetWindowSize();
     QPixmap BluredWallPaper;
+    QPixmap noise;
     void setBackground();
+    QPixmap addNoise(int size);
     void hideCloseButton();
     void initPosition();
     QSystemTrayIcon *m_trayIcon;
