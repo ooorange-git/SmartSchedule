@@ -313,8 +313,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     //设置背景色
     if(readFile("/config/blur").toInt()){
-        if(QSysInfo::productVersion() == "6.1"){
+        if(QSysInfo::productVersion() == "6.1" && !readFile("/unable.txt").toInt()){
             setAttribute(Qt::WA_NoSystemBackground);
+            setAttribute(Qt::WA_TranslucentBackground);
             HWND hwnd = reinterpret_cast<HWND>(this->winId());
             MARGINS margins = {-1,-1,-1,-1};
             DwmExtendFrameIntoClientArea(hwnd, &margins);
@@ -325,6 +326,7 @@ MainWindow::MainWindow(QWidget *parent)
         this->setPalette(pal);
         this->setAutoFillBackground(1);
     }
+
 
     ui->aboutButton->setFixedWidth(120);
     turnOn(readFile("/config/TurnOn").toInt());
@@ -337,6 +339,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->tabWidget->setTabText(1,"当前课程表");
 
     ui->checkBox->setChecked(readFile("/config/blur").toInt());
+    ui->checkBox_2->setEnabled(ui->checkBox->isChecked());
 
     ui->aboutButton->setStyleSheet("QPushButton:hover{background:qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #FF8E55, stop:1 #FF4526);border-radius:4px;border:none} QPushButton{background-color:#FFFFFF;border-radius:4px;border:none;padding: 4px 8px;}");
 
@@ -414,7 +417,7 @@ void MainWindow::on_aboutButton_clicked()
     aboutBox.setWindowIcon(m_s->windowIcon());
     aboutBox.setIconPixmap(m_s->windowIcon().pixmap(72,72));
     aboutBox.setWindowTitle("关于");
-    aboutBox.setText("作者：ooorange\n希望对班级课表有帮助(゜-゜)つロ 干杯~\n版本:Beta 1.3.2\n更新日志:1.修复了更换壁纸后毛玻璃未更新的问题\n2.修复了彩蛋状态下毛玻璃效果无法更新的问题\n3.优化了部分文字表达\n本程序已在Github开源：访问仓库：\nhttps://github.com/ooorange-git/SmartSchedule");
+    aboutBox.setText("作者：ooorange\n希望对班级课表有帮助(゜-゜)つロ 干杯~\n版本:Beta 1.3.3\n更新日志:1.修复了更换壁纸后高级材质未更新的问题\n2.修复了彩蛋状态下高级材质效果无法更新的问题\n3.优化了部分文字表达与按钮显示\n4.修复了系统高级材质下无法显示底部阴影的问题\n5.优化了高级材质显示效果\n本程序已在Github开源：访问仓库：\nhttps://github.com/ooorange-git/SmartSchedule");
     aboutBox.setStandardButtons(QMessageBox::Ok);
     aboutBox.exec();
 }
@@ -434,27 +437,6 @@ void MainWindow::on_TurnOn_clicked(bool checked)
         file.close();
     }else{
         QMessageBox::warning(this,"错误","设置失败，请检查程序所在的驱动器是否有充足的空间后重试");
-    }
-}
-
-
-void MainWindow::on_checkBox_clicked(bool checked)
-{
-    QFile file(QCoreApplication::applicationDirPath()+"/config/blur");
-    if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        QTextStream out(&file);
-        if(checked){
-            out << 1;
-        }else{
-            out << 0;
-        }
-        file.close();
-    }else{
-        QMessageBox::warning(this,"错误","设置失败，请检查程序所在的驱动器是否有充足的空间后重试");
-    }
-
-    if(QMessageBox::question(this,"Tip:如长期未看到新窗口请手动重启","设置成功，重启程序后生效,是否立即重启？")==QMessageBox::Yes){
-        restart();
     }
 }
 
@@ -509,6 +491,28 @@ void MainWindow::on_spinBox_textChanged(const QString &arg1)
         QMessageBox::warning(this,"---放大一点 ---嗯对","设置失败，请检查程序所在驱动器是否有足够的存储空间或是否处于系统文件夹等无权限访问文件夹内");
     }
     showWeek();
+}
+
+
+void MainWindow::on_checkBox_clicked(bool checked)
+{
+    ui->checkBox_2->setEnabled(checked);
+    QFile file(QCoreApplication::applicationDirPath()+"/config/blur");
+    if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        QTextStream out(&file);
+        if(checked){
+            out << 1;
+        }else{
+            out << 0;
+        }
+        file.close();
+    }else{
+        QMessageBox::warning(this,"错误","设置失败，请检查程序所在的驱动器是否有充足的空间后重试");
+    }
+
+    if(QMessageBox::question(this,"Tip:如长期未看到新窗口请手动重启","设置成功，重启程序后生效,是否立即重启？")==QMessageBox::Yes){
+        restart();
+    }
 }
 
 

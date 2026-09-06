@@ -75,7 +75,7 @@ bool Schedule::enableSetWindowCompositionAttribute(QWidget *w){
     ACCENT_POLICY ac;
     ac.AnimationId = 0;
     ac.AccentState = ACCENT_ENABLE_ACRYLICBLURBEHIND;
-    ac.AccentFlags = 0x20 | 0x40 | 0x80;
+    ac.AccentFlags = 0x20 | 0x40 | 0x80 | 0x100;
     ac.GradientColor = 0x20202020;
 
     WINDOWCOMPOSITIONATTRIBDATA wcd;
@@ -142,7 +142,7 @@ void Schedule::setBackground(){
     sc.addItem(&item);
 
     QGraphicsBlurEffect e;
-    e.setBlurRadius(95);
+    e.setBlurRadius(90);
     item.setGraphicsEffect(&e);
 
     BluredWallPaper = QPixmap(wallPaper.size());
@@ -190,11 +190,11 @@ void Schedule::setSystemTrayIcon(){
 
 void Schedule::paintEvent(QPaintEvent *event){
     QPainter p(this);
+    p.setRenderHint(QPainter::Antialiasing);
     if(CURRENT_BLUR_SETTING==1){
-        p.setRenderHint(QPainter::Antialiasing);
-        p.setBrush(QColor(255,255,255,64));
+        p.setBrush(QColor(255,255,255,80));
         p.setPen(Qt::lightGray);
-        p.drawRect(0,0,width(),height()-3);
+        p.drawRect(0,0,width(),height());
     }else if(CURRENT_BLUR_SETTING==2){
         QPainterPath path;
         path.addRoundedRect(rect(), 10, 10);
@@ -204,8 +204,9 @@ void Schedule::paintEvent(QPaintEvent *event){
         p.drawTiledPixmap(rect(),noise);
         p.drawPixmap(-x,-y,BluredWallPaper);
         p.fillRect(rect(), QColor(255, 255, 255, 160));
+        p.setPen(QColor(0,0,0,25));
+        p.drawRoundedRect(rect(),10,10);
     }else{
-        p.setRenderHint(QPainter::Antialiasing);
         p.setBrush(QColor(0xF0F0F4));
         p.setPen(Qt::lightGray);
         p.drawRoundedRect(this->rect(),10,10);
@@ -266,7 +267,6 @@ void Schedule::mouseMoveEvent(QMouseEvent *event){
         qDebug()<<this->minimumWidth();
         qDebug()<<width()+x_change;
         if((width()+x_change)>this->minimumWidth()){
-            qDebug()<<"改了";
             this->setGeometry(this->pos().x()-x_change,this->pos().y(),width()+x_change,height());
         }
         this->resize(width(),height()+y_change);
@@ -430,7 +430,6 @@ Schedule::Schedule(QWidget *parent)
     setWindowFlags(Qt::FramelessWindowHint);
     setAttribute(Qt::WA_ShowWithoutActivating);
     setWindowTitle("课程表");
-    setStyleSheet("QWidget { border-radius: 10px; }");
 
     if(readFile("/config/blur").toInt()){
         if(!readFile("/config/useWallpaper").toInt()){
