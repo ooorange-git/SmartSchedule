@@ -1,0 +1,24 @@
+# Qt Creator 用户配置
+*.pro.user
+*.pro.user.*
+
+# 编译产物
+build/
+*.o
+*.obj
+*.exe
+*.dll
+*.so
+*.a
+*.lib
+*.dylib
+
+# Qt 自动生成
+moc_*.cpp
+moc_*.h
+qrc_*.cpp
+ui_*.h
+*.moc
+.qmake.stash
+*.Debug
+*.Release
