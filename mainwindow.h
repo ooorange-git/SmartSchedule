@@ -43,15 +43,13 @@ private slots:
     void on_pushButton_3_clicked();
     void on_aboutButton_clicked();
     void on_pushButton_4_clicked();
-    void on_ifEmpty_activated(int index);
 
 private:
     QString readFile(QString path,bool *ok);
-    void writeFile(QString path,QString content);
+    bool writeFile(QString path,QString content);
     bool is_exist(QString path);
     void turnOn(bool is);
     void setCurrentLineEdit(QLineEdit *l);
-
     int currentScheduleWeekChange();
     void setLineEdit(QLineEdit *l);
     void setCurrentScheduleToolTip();

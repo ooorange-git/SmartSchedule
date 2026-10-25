@@ -62,12 +62,11 @@ private:
     bool usingPhy=0;
     QMenu *contextMenu=nullptr;
     void createContextMenu();
-    QTimer *timer_update;
     MainWindow *m_mainwindow=nullptr;
     QPushButton *closeB=nullptr;
     QGraphicsOpacityEffect *e = new QGraphicsOpacityEffect(closeB);
-    QPropertyAnimation *anim = new QPropertyAnimation(e,"opacity");
-    QPropertyAnimation *anim2 = new QPropertyAnimation(e,"opacity");
+    QPropertyAnimation *anim = nullptr;
+    QPropertyAnimation *anim2 = nullptr;
     bool m_pressing=0;
     QPoint firstPos;
     void setShadow();
@@ -82,9 +81,11 @@ private:
     QSystemTrayIcon *m_trayIcon;
     QMenu *m_trayMenu;
     void setSystemTrayIcon();
-    void SetLabel(QLabel *l,int today);
+    void setLabel(QLabel *l,int today);
+    void setLabelText(QLabel *l,QString content);
     void swapClass();
     Physics *p = nullptr;
+    bool inited=0;
 };
 
 #endif // SCHEDULE_H

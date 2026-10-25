@@ -25,6 +25,8 @@
 #include <QSystemTrayIcon>
 #include <QRandomGenerator>
 #include <QMessageBox>
+#include <QVariantAnimation>
+#include <QRegion>
 #include <windows.h>
 #include <dwmapi.h>
 
@@ -150,6 +152,7 @@ void Schedule::setBackground(){
     QPainter p(&BluredWallPaper);
     sc.render(&p);
 }
+
 //path格式为/xxx/xxx
 QString Schedule::readFile(QString path){
     QFile file(QCoreApplication::applicationDirPath()+path);
@@ -236,7 +239,7 @@ void Schedule::mousePressEvent(QMouseEvent *event){
 
 void Schedule::hideCloseButton(){
     if(closeB->rect().contains(closeB->mapFromGlobal(QCursor::pos()))){
-        QTimer::singleShot(10000,[this]{hideCloseButton();});
+        QTimer::singleShot(10000,this,[this]{hideCloseButton();});
     }else{
         anim2->start();
     }
@@ -245,7 +248,7 @@ void Schedule::hideCloseButton(){
 void Schedule::mouseMoveEvent(QMouseEvent *event){
     if(anim->state()!=QAbstractAnimation::Running && e->opacity()!=1.0){
         anim->start();
-        QTimer::singleShot(10000,[this]{hideCloseButton();});
+        QTimer::singleShot(10000,this,[this]{hideCloseButton();});
     }
 
     if(m_bDragging && (event->buttons() & Qt::LeftButton)){
@@ -290,8 +293,37 @@ void Schedule::resizeEvent(QResizeEvent *event){
     event->accept();
 }
 
+void Schedule::setLabelText(QLabel *l,QString content){
+    if(l->text()==content){
+        return;
+    }else if(!inited){
+        l->setText(content);
+    }else{
+        QVariantAnimation *anim1 = new QVariantAnimation(l);
+        anim1->setDuration(300);
+        anim1->setStartValue(1.0);
+        anim1->setEndValue(0.0);
+        anim1->setEasingCurve(QEasingCurve::InOutQuad);
+
+        int h=l->height();
+        int y=l->y();
+
+        connect(anim1, &QVariantAnimation::valueChanged,l,[=](const QVariant &val){
+            double n = val.toDouble();
+            int showingHeight = h*n;
+            l->setMask(QRegion(0,h-showingHeight,l->width(),showingHeight));
+        });
+
+        connect(anim1, &QVariantAnimation::finished, l, [anim1,content,l](){
+            anim1->deleteLater();
+            l->setText(content);
+        });
+        anim1->start();
+    }
+}
+
 //读取逻辑：先读取current文件夹有就用没有读std
-void Schedule::SetLabel(QLabel *l,int today){
+void Schedule::setLabel(QLabel *l,int today){
     QString week = QString::number(MainWindow::goodDay());
     QString day = QString::number(today);
     QString path1 = QCoreApplication::applicationDirPath()+"/config/current"+week+"/"+day;
@@ -302,17 +334,13 @@ void Schedule::SetLabel(QLabel *l,int today){
         QTextStream in(&file1);
         content = in.readAll();
         file1.close();
-        if(content.isEmpty()){
-            if(readFile("/config/ifEmpty").toInt()==0){
-                QFile file2(path2);
-                file2.open(QIODevice::ReadOnly | QIODevice::Text);
-                QTextStream in2(&file2);
-                content = in2.readAll();
-                file2.close();
-            }else if(readFile("/config/ifEmpty").toInt()==2){
-                content = "无课";
-            }
-        }
+        // if(content.isEmpty()){
+        //     QFile file2(path2);
+        //     file2.open(QIODevice::ReadOnly | QIODevice::Text);
+        //     QTextStream in2(&file2);
+        //     content = in2.readAll();
+        //     file2.close();
+        // }
     }else{
         QFile file2(path2);
         if(file2.open(QIODevice::ReadOnly | QIODevice::Text)){
@@ -324,14 +352,26 @@ void Schedule::SetLabel(QLabel *l,int today){
     if(content.contains('/')){
         QStringList sl=content.split('/');
         if(MainWindow::weekNow()%2==0){
-            l->setText(sl[1]);
+            if(inited){
+                setLabelText(l,sl[1]);
+            }else{
+              l->setText(sl[1]);
+            }
         }else{
-            l->setText(sl[0]);
+            if(inited){
+                setLabelText(l,sl[0]);
+            }else{
+                l->setText(sl[0]);
+            }
         }
         return;
     }
 
-    l->setText(content);
+    if(inited){
+        setLabelText(l,content);
+    }else{
+       l->setText(content);
+    }
 }
 
 
@@ -354,10 +394,10 @@ void Schedule::monday(){
     QLabel* labels[8]={ui->C1,ui->BB1,ui->C3,ui->C4,ui->C5,ui->C6,ui->C7,ui->C8};
     showAll();
     ui->C2->setText("升旗仪式");
-    ui->Noon->setText("——午休——");
+    ui->Noon->setText("午休");
     ui->BB2->setText("双师体育课");
     for(int i=0;i<8;i++){
-        SetLabel(labels[i],i+1);
+        setLabel(labels[i],i+1);
     }
 }
 
@@ -365,10 +405,10 @@ void Schedule::weekday(){
     QLabel* labels[8]={ui->C1,ui->C2,ui->C3,ui->C4,ui->C5,ui->C6,ui->C7,ui->C8};
     showAll();
     ui->BB1->setText("大课间");
-    ui->Noon->setText("——午休——");
+    ui->Noon->setText("午休");
     ui->BB2->setText("双师体育课");
     for(int i=0;i<8;i++){
-        SetLabel(labels[i],i+1);
+        setLabel(labels[i],i+1);
     }
 }
 
@@ -447,13 +487,17 @@ Schedule::Schedule(QWidget *parent)
         }
     }else if(CURRENT_BLUR_SETTING==2){
         setBackground();
+        QTimer *timer_update_background = new QTimer(this);
+        connect(timer_update_background,&QTimer::timeout,this,&Schedule::setBackground);
+        timer_update_background->start(30000);
     }
 
+    anim = new QPropertyAnimation(e,"opacity");
     anim->setDuration(1000);
     anim->setStartValue(0.0);
     anim->setEndValue(1.0);
 
-
+    anim2 = new QPropertyAnimation(e,"opacity");
     anim2->setDuration(1000);
     anim2->setStartValue(1.0);
     anim2->setEndValue(0.0);
@@ -480,15 +524,12 @@ Schedule::Schedule(QWidget *parent)
 
     noise = addNoise(100);
 
-    QTimer::singleShot(50,[this]{initPosition();});
+    inited = 1;
 
-    timer_update = new QTimer(this);
+    QTimer::singleShot(50,[this]{initPosition();});
+    QTimer *timer_update = new QTimer(this);
     connect(timer_update,&QTimer::timeout,this,&Schedule::updateLabel);
     timer_update->start(5000);
-
-    QTimer *timer_update_background = new QTimer(this);
-    connect(timer_update_background,&QTimer::timeout,this,&Schedule::setBackground);
-    timer_update_background->start(300000);
 }
 
 void Schedule::createContextMenu()
@@ -564,9 +605,8 @@ void Schedule::swapClass(){
 }
 
 void Schedule::closeEvent(QCloseEvent *event){
-    if(event->isAccepted()){
-        qApp->quit();
-    }
+    qApp->quit();
+    event->accept();
 }
 
 Schedule::~Schedule()

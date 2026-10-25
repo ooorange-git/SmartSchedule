@@ -21,13 +21,18 @@
 
 //==============乱七八糟业务逻辑===========================
 
-void MainWindow::writeFile(QString path,QString content){
+bool MainWindow::writeFile(QString path,QString content){
     QFile file(QCoreApplication::applicationDirPath()+path);
-    file.open(QIODevice::WriteOnly | QIODevice::Text);
-    QTextStream out(&file);
-    out<<content;
-    file.close();
+    bool result = file.open(QIODevice::WriteOnly | QIODevice::Text);
+    if(result){
+        QTextStream out(&file);
+        out<<content;
+        out.flush();
+        file.close();
+    }
+    return result;
 }
+
 //格式“/xxx/xx”
 QString MainWindow::readFile(QString path,bool *ok=nullptr){
     QFile file(QCoreApplication::applicationDirPath()+path);
@@ -155,36 +160,27 @@ void MainWindow::turnOn(bool is){
 
 void MainWindow::setSchedule(const QString &text){
     QString name = QObject::sender()->objectName();
-    QString path=QCoreApplication::applicationDirPath()+"/config/";
+    QString path="/config/";
     path+=name[1];
     QDir p;
     p.mkdir(path);
     path+="/";
     path+=name[2];
 
-    QFile file(path);
-    if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        QTextStream out(&file);
-        out<<text;
-        file.close();
-    }
+    writeFile(path,text);
+    m_s->updateLabel();
 }
 
 void MainWindow::setCurrentSchedule(const QString &text){
     QString name = QObject::sender()->objectName();
-    QString path=QCoreApplication::applicationDirPath()+"/config/current";
+    QString path="/config/current";
     path+=name[1];
     QDir p;
     p.mkdir(path);
     path+="/";
     path+=name[2];
 
-    QFile file(path);
-    if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        QTextStream out(&file);
-        out<<text;
-        file.close();
-    }
+    writeFile(path,text);
 }
 
 void MainWindow::setCurrentScheduleToolTip(){
@@ -232,20 +228,18 @@ void MainWindow::setCurrentScheduleToolTip(){
 
 
 int MainWindow::recordCurrentScheduleWeek(int changeWeek){
+    m_s->updateLabel();
     QString fileContent = readFile("/config/currentScheduleWeek");
     QString stdWeek = fileContent.section("+",0,0);
     QString change = fileContent.section("+",1,1);
     int left = stdWeek.toInt();
     int right = stdWeek.toInt()+change.toInt();
     if(!(weekNow()<=right && weekNow()>=left)){//过期
-        qDebug()<<1;
         writeFile("/config/currentScheduleWeek",QString::number(weekNow())+"+"+QString::number(changeWeek+change.toInt()));
     }else{
-        if(changeWeek==-1){//如果change=0
-            qDebug()<<2;
+        if(changeWeek==-1){
             writeFile("/config/currentScheduleWeek",QString::number(weekNow())+"+0");
         }else{
-            qDebug()<<3;
             writeFile("/config/currentScheduleWeek",stdWeek+"+"+QString::number(changeWeek+change.toInt()));
         }
     }
@@ -356,8 +350,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->checkBox_2->setChecked(readFile("/config/useWallpaper").toInt());
 
-    ui->ifEmpty->setCurrentIndex(readFile("/config/ifEmpty").toInt());
-
     const auto stdChildren = ui->tabWidget->widget(0)->findChildren<QLineEdit*>();
     for(QLineEdit *edit : stdChildren){
         connect(edit,&QLineEdit::textEdited,this,&MainWindow::setSchedule);
@@ -426,41 +418,15 @@ void MainWindow::on_aboutButton_clicked()
 void MainWindow::on_TurnOn_clicked(bool checked)
 {
     turnOn(checked);
-    QFile file(QCoreApplication::applicationDirPath()+"/config/TurnOn");
-    if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        QTextStream out(&file);
-        if(checked){
-            out << 1;
-        }else{
-            out << 0;
-        }
-        file.close();
-    }else{
-        QMessageBox::warning(this,"错误","设置失败，请检查程序所在的驱动器是否有充足的空间后重试");
-    }
+    writeFile("/config/TurnOn",QString::number(checked));
 }
 
-
+//今天上周？课槽函数
 void MainWindow::on_day_textActivated(const QString &arg1)
 {
-    QFile file1(QCoreApplication::applicationDirPath()+"/config/day");
-    QFile file2(QCoreApplication::applicationDirPath()+"/config/dayCheck");
     QDate currentDate = QDate::currentDate();
-    if (file1.open(QIODevice::WriteOnly | QIODevice::Text)){
-        QTextStream out(&file1);
-        out<<arg1;
-        file1.close();
-        if (file2.open(QIODevice::WriteOnly | QIODevice::Text)){
-            QTextStream out(&file2);
-            out<<currentDate.toString("yyyyMMdd");
-            file2.close();
-        }
-        else{
-            QMessageBox::warning(this,"错误","设置失败，请检查程序所在的驱动器是否有充足的空间后重试");
-        }
-    }
-    else{
-        QMessageBox::warning(this,"错误","设置失败，请检查程序所在的驱动器是否有充足的空间后重试");
+    if(writeFile("/config/day",arg1)){
+        writeFile("/config/dayCheck",currentDate.toString("yyyyMMdd"));
     }
     m_s->updateLabel();
 }
@@ -468,28 +434,14 @@ void MainWindow::on_day_textActivated(const QString &arg1)
 
 void MainWindow::on_dateEdit_userDateChanged(const QDate &date)
 {
-    QFile file(QCoreApplication::applicationDirPath()+"/config/startTerm");
-    if(file.open(QIODevice::WriteOnly | QIODevice::Text)){
-        QTextStream out(&file);
-        out<<date.toString(Qt::ISODate);
-        file.close();
-    }else{
-        QMessageBox::warning(this,"俺寻思不对啊","设置失败，请检查程序所在驱动器是否有足够的存储空间或是否处于系统文件夹等无权限访问文件夹内");
-    }
+    writeFile("/config/startTerm",date.toString(Qt::ISODate));
     showWeek();
 }
 
 
 void MainWindow::on_spinBox_textChanged(const QString &arg1)
 {
-    QFile file(QCoreApplication::applicationDirPath()+"/config/change");
-    if(file.open(QIODevice::WriteOnly | QIODevice::Text)){
-        QTextStream out(&file);
-        out<<arg1;
-        file.close();
-    }else{
-        QMessageBox::warning(this,"---放大一点 ---嗯对","设置失败，请检查程序所在驱动器是否有足够的存储空间或是否处于系统文件夹等无权限访问文件夹内");
-    }
+    writeFile("/config/change",arg1);
     showWeek();
 }
 
@@ -497,18 +449,7 @@ void MainWindow::on_spinBox_textChanged(const QString &arg1)
 void MainWindow::on_checkBox_clicked(bool checked)
 {
     ui->checkBox_2->setEnabled(checked);
-    QFile file(QCoreApplication::applicationDirPath()+"/config/blur");
-    if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        QTextStream out(&file);
-        if(checked){
-            out << 1;
-        }else{
-            out << 0;
-        }
-        file.close();
-    }else{
-        QMessageBox::warning(this,"错误","设置失败，请检查程序所在的驱动器是否有充足的空间后重试");
-    }
+    writeFile("/config/blur",QString::number(checked));
 
     if(QMessageBox::question(this,"Tip:如长期未看到新窗口请手动重启","设置成功，重启程序后生效,是否立即重启？")==QMessageBox::Yes){
         restart();
@@ -518,18 +459,8 @@ void MainWindow::on_checkBox_clicked(bool checked)
 
 void MainWindow::on_checkBox_2_clicked(bool checked)
 {
-    QFile file(QCoreApplication::applicationDirPath()+"/config/useWallpaper");
-    if(file.open(QIODevice::WriteOnly | QIODevice::Text)){
-        QTextStream out(&file);
-        if(checked){
-            out<<1;
-        }else{
-            out<<0;
-        }
-        file.close();
-    }else{
-        QMessageBox::warning(this,"---放大一点 ---嗯对","设置失败，请检查程序所在驱动器是否有足够的存储空间或是否处于系统文件夹等无权限访问文件夹内");
-    }
+    writeFile("/config/useWallpaper",QString::number(checked));
+
     if(QMessageBox::question(this,"Tip:如长期未看到新窗口请手动重启","设置成功，重启程序后生效,是否立即重启？")==QMessageBox::Yes){
         restart();
     }
@@ -603,11 +534,3 @@ void MainWindow::on_pushButton_4_clicked()
     recordCurrentScheduleWeek(-1);
     QMessageBox::information(this,"提示","取消成功");
 }
-
-
-void MainWindow::on_ifEmpty_activated(int index)
-{
-    writeFile("/config/ifEmpty",QString::number(index));
-    m_s->updateLabel();
-}
-
