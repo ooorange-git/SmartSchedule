@@ -411,7 +411,7 @@ void MainWindow::on_aboutButton_clicked()
     aboutBox.setWindowIcon(m_s->windowIcon());
     aboutBox.setIconPixmap(m_s->windowIcon().pixmap(72,72));
     aboutBox.setWindowTitle("关于");
-    aboutBox.setText("作者：ooorange\n希望对班级课表有帮助(゜-゜)つロ 干杯~\n版本:Beta 1.3.3\n更新日志:1.修复了更换壁纸后高级材质未更新的问题\n2.修复了彩蛋状态下高级材质效果无法更新的问题\n3.优化了部分文字表达与按钮显示\n4.修复了系统高级材质下无法显示底部阴影的问题\n5.优化了高级材质显示效果\n本程序已在Github开源：访问仓库：\nhttps://github.com/ooorange-git/SmartSchedule");
+    aboutBox.setText("作者：ooorange\n希望对班级课表有帮助(゜-゜)つロ 干杯~\n版本:Beta 1.4\n更新日志:1.提升代码安全性，避免了部分野指针问题\n2.为课程修改添加了动画\n3.删除了先前的部分冗长代码，提高可读性\n本程序已在Github开源：访问仓库：\nhttps://github.com/ooorange-git/SmartSchedule\n\n严正声明：本程序仅供学习娱乐使用，与Mojang AB与网易科技有限公司无任何关联，也不代表任何其他公司，组织，个人，不涉及网络，坚持数据安全，无充值入口，无诱导沉迷与不良影响，如有雷同，暴露作者创新驱动发展意识淡薄");
     aboutBox.setStandardButtons(QMessageBox::Ok);
     aboutBox.exec();
 }
