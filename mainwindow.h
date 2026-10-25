@@ -57,6 +57,7 @@ private:
     void updateInfo();
     Schedule *m_s = nullptr;
     Ui::MainWindow *ui;
+    bool inited = 0;
 };
 
 

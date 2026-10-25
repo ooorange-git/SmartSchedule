@@ -267,8 +267,6 @@ void Schedule::mouseMoveEvent(QMouseEvent *event){
     if(m_pressing){
         int x_change = firstPos.x()-event->globalX();
         int y_change = event->globalY()-firstPos.y();
-        qDebug()<<this->minimumWidth();
-        qDebug()<<width()+x_change;
         if((width()+x_change)>this->minimumWidth()){
             this->setGeometry(this->pos().x()-x_change,this->pos().y(),width()+x_change,height());
         }
@@ -295,30 +293,46 @@ void Schedule::resizeEvent(QResizeEvent *event){
 
 void Schedule::setLabelText(QLabel *l,QString content){
     if(l->text()==content){
-        return;
+        l->clearMask();
     }else if(!inited){
         l->setText(content);
     }else{
         QVariantAnimation *anim1 = new QVariantAnimation(l);
-        anim1->setDuration(300);
+        anim1->setDuration(500);
         anim1->setStartValue(1.0);
         anim1->setEndValue(0.0);
         anim1->setEasingCurve(QEasingCurve::InOutQuad);
 
+        QVariantAnimation *anim2 = new QVariantAnimation(l);
+        anim2->setDuration(300);
+        anim2->setStartValue(0.0);
+        anim2->setEndValue(1.0);
+        anim2->setEasingCurve(QEasingCurve::InOutQuad);
+
         int h=l->height();
-        int y=l->y();
 
         connect(anim1, &QVariantAnimation::valueChanged,l,[=](const QVariant &val){
             double n = val.toDouble();
-            int showingHeight = h*n;
+            int showingHeight = h*n+1;
             l->setMask(QRegion(0,h-showingHeight,l->width(),showingHeight));
         });
 
-        connect(anim1, &QVariantAnimation::finished, l, [anim1,content,l](){
-            anim1->deleteLater();
-            l->setText(content);
+        connect(anim2, &QVariantAnimation::valueChanged,l,[=](const QVariant &val){
+            double n = val.toDouble();
+            int showingHeight = h*n+1;
+            l->setMask(QRegion(0,h-showingHeight,l->width(),showingHeight));
         });
-        anim1->start();
+
+        connect(anim1, &QVariantAnimation::finished, l, [content,l,anim2](){
+            l->setText(content);
+            anim2->start(QAbstractAnimation::DeleteWhenStopped);
+        });
+
+        connect(anim2, &QVariantAnimation::finished, l, [l](){
+            l->clearMask();
+        });
+
+        anim1->start(QAbstractAnimation::DeleteWhenStopped);
     }
 }
 
@@ -334,13 +348,6 @@ void Schedule::setLabel(QLabel *l,int today){
         QTextStream in(&file1);
         content = in.readAll();
         file1.close();
-        // if(content.isEmpty()){
-        //     QFile file2(path2);
-        //     file2.open(QIODevice::ReadOnly | QIODevice::Text);
-        //     QTextStream in2(&file2);
-        //     content = in2.readAll();
-        //     file2.close();
-        // }
     }else{
         QFile file2(path2);
         if(file2.open(QIODevice::ReadOnly | QIODevice::Text)){

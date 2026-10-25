@@ -166,9 +166,10 @@ void MainWindow::setSchedule(const QString &text){
     p.mkdir(path);
     path+="/";
     path+=name[2];
-
     writeFile(path,text);
-    m_s->updateLabel();
+    if(inited){
+       m_s->updateLabel();
+    }
 }
 
 void MainWindow::setCurrentSchedule(const QString &text){
@@ -176,10 +177,9 @@ void MainWindow::setCurrentSchedule(const QString &text){
     QString path="/config/current";
     path+=name[1];
     QDir p;
-    p.mkdir(path);
+    p.mkdir(QCoreApplication::applicationDirPath()+path);
     path+="/";
     path+=name[2];
-
     writeFile(path,text);
 }
 
@@ -228,7 +228,6 @@ void MainWindow::setCurrentScheduleToolTip(){
 
 
 int MainWindow::recordCurrentScheduleWeek(int changeWeek){
-    m_s->updateLabel();
     QString fileContent = readFile("/config/currentScheduleWeek");
     QString stdWeek = fileContent.section("+",0,0);
     QString change = fileContent.section("+",1,1);
@@ -244,6 +243,7 @@ int MainWindow::recordCurrentScheduleWeek(int changeWeek){
         }
     }
     setCurrentScheduleToolTip();
+    QTimer::singleShot(50,this,[this](){m_s->updateLabel();});
     return right+changeWeek;
 }
 
@@ -321,6 +321,7 @@ MainWindow::MainWindow(QWidget *parent)
         this->setAutoFillBackground(1);
     }
 
+    ui->tabWidget->setCurrentIndex(1);
 
     ui->aboutButton->setFixedWidth(120);
     turnOn(readFile("/config/TurnOn").toInt());
@@ -390,6 +391,7 @@ MainWindow::MainWindow(QWidget *parent)
     showWeek();
     this->update();
 
+    inited = 1;
     QTimer *timer_update = new QTimer(this);
     connect(timer_update,&QTimer::timeout,this,&MainWindow::updateInfo);
     timer_update->start(6000);
