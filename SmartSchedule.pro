@@ -18,15 +18,16 @@ SOURCES += \
 
 
 HEADERS += \
+    clock.h \
     mainwindow.h \
     physics.h \
     schedule.h \
-    swapclassdialog.h
+    systemapi.h \
+    updater.h
 
 FORMS += \
     mainwindow.ui \
-    schedule.ui \
-    swapclassdialog.ui
+    schedule.ui
 
 LIBS += -ldwmapi
 
@@ -38,4 +39,4 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 RC_FILE += logo.rc
 
 RESOURCES += \
-    icon.qrc
+    res.qrc

@@ -1,6 +1,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "schedule.h"
+#include "clock.h"
+
 #include <QDebug>
 #include <QTimer>
 #include <QMessageBox>
@@ -15,46 +17,12 @@
 #include <QLineEdit>
 #include <QDate>
 #include <QProcess>
-#include <windows.h>
-#include <dwmapi.h>
 #include <physics.h>
+#include <systemapi.h>
 
-//==============乱七八糟业务逻辑===========================
+using namespace SystemAPI;
 
-bool MainWindow::writeFile(QString path,QString content){
-    QFile file(QCoreApplication::applicationDirPath()+path);
-    bool result = file.open(QIODevice::WriteOnly | QIODevice::Text);
-    if(result){
-        QTextStream out(&file);
-        out<<content;
-        out.flush();
-        file.close();
-    }
-    return result;
-}
-
-//格式“/xxx/xx”
-QString MainWindow::readFile(QString path,bool *ok=nullptr){
-    QFile file(QCoreApplication::applicationDirPath()+path);
-    if(file.open(QIODevice::ReadOnly | QIODevice::Text)){
-        QTextStream out(&file);
-        QString content = out.readAll();
-        file.close();
-        if(ok){
-            *ok = 1;
-        }
-        return content.trimmed();
-    }else{
-        if(ok){
-           *ok = 0;
-        }
-        return QString();
-    }
-}
-
-bool MainWindow::is_exist(QString path){
-    return QFile::exists(QCoreApplication::applicationDirPath()+path);
-}
+//==============业务逻辑=================
 
 void MainWindow::restart(){
     if (socket) {
@@ -71,76 +39,6 @@ void MainWindow::restart(){
     }else{
         QMessageBox::critical(this,"……","重启似乎失败了，请手动重启");
     }
-}
-
-int MainWindow::goodDay(){
-    QFile file(QCoreApplication::applicationDirPath()+"/config/day");
-    file.open(QIODevice::ReadOnly | QIODevice::Text);
-    QTextStream in(&file);
-    QString dayInFile=in.readAll();//文件中设置的星期
-
-    QFile file2(QCoreApplication::applicationDirPath()+"/config/dayCheck");
-    file2.open(QIODevice::ReadOnly | QIODevice::Text);
-    QTextStream in2(&file2);
-    int checkInFile=in2.readAll().toInt();
-
-    QDate date=QDate::currentDate();
-    int cD=date.toString("yyyyMMdd").toInt();
-    file.close();
-    file2.close();
-    if(dayInFile=="自动"){
-        return date.dayOfWeek();
-    }else{
-        if(cD==checkInFile){
-            return dayInFile.toInt();
-        }else{
-            return date.dayOfWeek();
-        }
-    }
-}
-
-//该函数能返回精确周数含用户手动加减！！！
-int MainWindow::weekNow(){
-    int total=1;
-    QFile file(QCoreApplication::applicationDirPath()+"/config/startTerm");
-    QDate d2=QDate::currentDate();
-    if(file.open(QIODevice::ReadOnly | QIODevice::Text)){
-        QTextStream in(&file);
-        QDate d1=QDate::fromString(in.readAll().trimmed(),Qt::ISODate);
-        if(d1>d2){
-            return -1;
-        }
-        for(;d1!=d2;d1=d1.addDays(1)){
-            if(d1.dayOfWeek()==7){
-                total++;
-            }
-        }
-    }else{
-        QDate d1(2000,1,1);
-        for(;d1!=d2;d1=d1.addDays(1)){
-            if(d1.dayOfWeek()==7){
-                total++;
-            }
-        }
-        QFile file2(QCoreApplication::applicationDirPath()+"/config/change");
-        if(file2.open(QIODevice::ReadOnly | QIODevice::Text)){
-            QTextStream in2(&file2);
-            int c=in2.readAll().toInt();
-            file2.close();
-            return total+c;
-        }else{
-            return total;
-        }
-    }
-    file.close();
-
-    QFile file2(QCoreApplication::applicationDirPath()+"/config/change");
-    file2.open(QIODevice::ReadOnly | QIODevice::Text);
-    QTextStream in2(&file2);
-    int c=in2.readAll().toInt();
-    file2.close();
-    total+=c;
-    return total;
 }
 
 int MainWindow::currentScheduleWeekChange(){
@@ -173,14 +71,19 @@ void MainWindow::setSchedule(const QString &text){
 }
 
 void MainWindow::setCurrentSchedule(const QString &text){
-    QString name = QObject::sender()->objectName();
-    QString path="/config/current";
-    path+=name[1];
-    QDir p;
-    p.mkdir(QCoreApplication::applicationDirPath()+path);
-    path+="/";
-    path+=name[2];
-    writeFile(path,text);
+    if(is_cleaning){
+        return;
+    }else{
+        QString name = QObject::sender()->objectName();
+        QString path="/config/current";
+        path+=name[1];
+        QDir p;
+        p.mkdir(QCoreApplication::applicationDirPath()+path);
+        path+="/";
+        path+=name[2];
+        writeFile(path,text);
+    }
+
 }
 
 void MainWindow::setCurrentScheduleToolTip(){
@@ -206,14 +109,15 @@ void MainWindow::setCurrentScheduleToolTip(){
     if(isEmpty){
         ui->tabWidget->setTabToolTip(1,"本周或设置周数内换课后的课表，每周结束自动恢复为标准课程表，目前什么也没有，将使用标准课表");
     }else{
-        if(weekNow()==-1){
+        int week = Clock::weekNow();
+        if(week==-1){
             ui->tabWidget->setTabToolTip(1,"本周或设置周数内换课后的实际课程表，每周结束自动恢复为标准课程表，当前未开学，设置无效");
         }else{
             if(isSame){
                 ui->tabWidget->setTabToolTip(1,"本周或设置周数内换课后的课表，每周结束自动恢复为标准课程表，目前与标准课表相同");
             }else{
                 if(currentScheduleWeekChange()==0){
-                    ui->tabWidget->setTabToolTip(1,"本周(第"+QString::number(weekNow())+"周)换课后的实际课程表,每周结束自动恢复为标准课程表");
+                    ui->tabWidget->setTabToolTip(1,"本周(第"+QString::number(week)+"周)换课后的实际课程表,每周结束自动恢复为标准课程表");
                 }else{
                     QString fileContent = readFile("/config/currentScheduleWeek");
                     QString stdWeek = fileContent.section("+",0,0);
@@ -233,11 +137,16 @@ int MainWindow::recordCurrentScheduleWeek(int changeWeek){
     QString change = fileContent.section("+",1,1);
     int left = stdWeek.toInt();
     int right = stdWeek.toInt()+change.toInt();
-    if(!(weekNow()<=right && weekNow()>=left)){//过期
-        writeFile("/config/currentScheduleWeek",QString::number(weekNow())+"+"+QString::number(changeWeek+change.toInt()));
+    int week = Clock::weekNow();
+    if(week<0){
+        setCurrentScheduleToolTip();
+        return 0;
+    }
+    if(!(week<=right && week>=left)){//过期
+        writeFile("/config/currentScheduleWeek",QString::number(week)+"+"+QString::number(changeWeek+change.toInt()));
     }else{
         if(changeWeek==-1){
-            writeFile("/config/currentScheduleWeek",QString::number(weekNow())+"+0");
+            writeFile("/config/currentScheduleWeek",QString::number(week)+"+0");
         }else{
             writeFile("/config/currentScheduleWeek",stdWeek+"+"+QString::number(changeWeek+change.toInt()));
         }
@@ -249,10 +158,11 @@ int MainWindow::recordCurrentScheduleWeek(int changeWeek){
 
 void MainWindow::showWeek(){
     QLabel *sW = ui->week;
-    if(weekNow()!=-1){
-        sW->setText("今天是开学第"+QString::number(weekNow())+"周");
-    }else{
+    int week = Clock::weekNow();
+    if(week==-1){
         sW->setText("今天还未开学");
+    }else{
+        sW->setText("今天是开学第"+QString::number(week)+"周");
     }
 }
 
@@ -286,7 +196,6 @@ void MainWindow::deleteOutOfDate(int week,int day){
 
 void MainWindow::aboutButtonMenu(const QPoint &pos){
     QPoint p = ui->aboutButton->mapToGlobal(pos);
-
     QMenu m;
     QAction *a1 = m.addAction("千万别点");
     connect(a1,&QAction::triggered,this,[this]{m_s->usePhy();});
@@ -310,9 +219,7 @@ MainWindow::MainWindow(QWidget *parent)
         if(QSysInfo::productVersion() == "6.1" && !readFile("/unable.txt").toInt()){
             setAttribute(Qt::WA_NoSystemBackground);
             setAttribute(Qt::WA_TranslucentBackground);
-            HWND hwnd = reinterpret_cast<HWND>(this->winId());
-            MARGINS margins = {-1,-1,-1,-1};
-            DwmExtendFrameIntoClientArea(hwnd, &margins);
+            SystemAPI::extendFrameIntoClientArea(this);
         }
     }else{
         QPalette pal = this->palette();
@@ -339,10 +246,10 @@ MainWindow::MainWindow(QWidget *parent)
     ui->aboutButton->setStyleSheet("QPushButton:hover{background:qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #FF8E55, stop:1 #FF4526);border-radius:4px;border:none} QPushButton{background-color:#FFFFFF;border-radius:4px;border:none;padding: 4px 8px;}");
 
     QComboBox *day = ui->day;
-    if(MainWindow::goodDay()==QDate::currentDate().dayOfWeek()){
+    if(Clock::goodDay()==QDate::currentDate().dayOfWeek()){
         day->setCurrentText("自动");
     }else{
-        day->setCurrentIndex(goodDay());
+        day->setCurrentIndex(Clock::goodDay());
     }
 
     ui->dateEdit->setDate(QDate::fromString(readFile("/config/startTerm").trimmed(),Qt::ISODate));
@@ -359,11 +266,11 @@ MainWindow::MainWindow(QWidget *parent)
 
     const auto currentChildren = ui->tabWidget->widget(1)->findChildren<QLineEdit*>();
     bool acSetting = 1;//当前课表是否过期
-    if(QDate::currentDate().year()>=2026){//当前时间是否可靠
+    if(Clock::timeTrusted()){//当前时间是否可靠
         QString csw=readFile("/config/currentScheduleWeek");
         int fCsw = csw.section("+",0,0).toInt();
         int bCsw = csw.section("+",1,1).toInt();
-        if((fCsw<=weekNow()) && (weekNow()<=fCsw+bCsw)){
+        if((fCsw<=Clock::weekNow()) && (Clock::weekNow()<=fCsw+bCsw)){
             acSetting=1;
         }else{
             acSetting=0;
@@ -395,6 +302,40 @@ MainWindow::MainWindow(QWidget *parent)
     QTimer *timer_update = new QTimer(this);
     connect(timer_update,&QTimer::timeout,this,&MainWindow::updateInfo);
     timer_update->start(6000);
+
+    if(!Clock::timeTrusted()){
+        QTimer *timer_del = new QTimer(this);
+        connect(timer_del,&QTimer::timeout,this,[this,timer_del](){
+            const auto currentChildren = ui->tabWidget->widget(1)->findChildren<QLineEdit*>();
+            bool acSetting = 1;//当前课表是否过期
+            if(Clock::timeTrusted()){//当前时间是否可靠
+                QString csw=readFile("/config/currentScheduleWeek");
+                int fCsw = csw.section("+",0,0).toInt();
+                int bCsw = csw.section("+",1,1).toInt();
+                is_cleaning = 1;
+                if((fCsw<=Clock::weekNow()) && (Clock::weekNow()<=fCsw+bCsw)){
+                    acSetting=1;
+                }else{
+                    acSetting=0;
+                    for(QLineEdit *edit2 : currentChildren){
+                        deleteOutOfDate(edit2->objectName()[1].digitValue(),edit2->objectName()[2].digitValue());
+                        edit2->setText(ui->tabWidget->widget(0)->findChild<QLineEdit*>(edit2->objectName().left(3))->text());
+                    }
+                    QFile::remove(QCoreApplication::applicationDirPath()+"/config/currentScheduleWeek");
+                }
+                for(QLineEdit *edit3 : currentChildren){
+                    if(acSetting){
+                        setCurrentLineEdit(edit3);
+                    }
+                }
+                is_cleaning = 0;
+                timer_del->deleteLater();
+            }
+        });
+
+        timer_del->start(5000);
+    }
+
 }
 
 MainWindow::~MainWindow()
@@ -411,7 +352,7 @@ void MainWindow::on_aboutButton_clicked()
     aboutBox.setWindowIcon(m_s->windowIcon());
     aboutBox.setIconPixmap(m_s->windowIcon().pixmap(72,72));
     aboutBox.setWindowTitle("关于");
-    aboutBox.setText("作者：ooorange\n希望对班级课表有帮助(゜-゜)つロ 干杯~\n版本:Beta 1.4\n更新日志:1.提升代码安全性，避免了部分野指针问题\n2.为课程修改添加了动画\n3.删除了先前的部分冗长代码，提高可读性\n本程序已在Github开源：访问仓库：\nhttps://github.com/ooorange-git/SmartSchedule\n\n严正声明：本程序仅供学习娱乐使用，与Mojang AB与网易科技有限公司无任何关联，也不代表任何其他公司，组织，个人，不涉及网络，坚持数据安全，无充值入口，无诱导沉迷与不良影响，如有雷同，暴露作者创新驱动发展意识淡薄");
+    aboutBox.setText("作者：ooorange\n希望对班级课表有帮助(゜-゜)つロ 干杯~\n版本:Beta 1.5\n更新日志:1.封装了部分函数，提高代码可读性\n2.修复了无法删除过期课程表的问题\n下期预告:应用内更新，自动下载，无需手动替换exe！\n本程序已在Github开源：访问仓库：\nhttps://github.com/ooorange-git/SmartSchedule");
     aboutBox.setStandardButtons(QMessageBox::Ok);
     aboutBox.exec();
 }

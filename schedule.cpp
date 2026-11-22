@@ -2,6 +2,9 @@
 #include "ui_schedule.h"
 #include "mainwindow.h"
 #include "physics.h"
+#include "systemapi.h"
+#include "clock.h"
+
 #include <QDate>
 #include <QFile>
 #include <QAction>
@@ -27,79 +30,9 @@
 #include <QMessageBox>
 #include <QVariantAnimation>
 #include <QRegion>
-#include <windows.h>
-#include <dwmapi.h>
 
 
-
-enum WINDOWCOMPOSITIONATTRIB {
-    WCA_ACCENT_POLICY=19,
-};
-
-enum ACCENT_STATE {
-    ACCENT_DISABLED = 0,
-    ACCENT_ENABLE_GRADIENT = 1,
-    ACCENT_ENABLE_TRANSPARENTGRADIENT = 2,
-    ACCENT_ENABLE_BLURBEHIND = 3,          // 经典毛玻璃
-    ACCENT_ENABLE_ACRYLICBLURBEHIND = 4,   // Win10 1803+ 亚克力效果
-    ACCENT_ENABLE_HOSTBACKDROP = 5         // 更现代的云母效果
-};
-
-typedef struct _ACCENT_POLICY {
-    ACCENT_STATE AccentState;
-    DWORD        AccentFlags;
-    DWORD        GradientColor;
-    DWORD        AnimationId;
-} ACCENT_POLICY, *PACCENT_POLICY;
-
-typedef struct _WINDOWCOMPOSITIONATTRIBDATA {
-    WINDOWCOMPOSITIONATTRIB Attrib;
-    PVOID                   pvData;
-    UINT                    cbData;
-} WINDOWCOMPOSITIONATTRIBDATA, *PWINDOWCOMPOSITIONATTRIBDATA;
-
-typedef BOOL (WINAPI *pfnSetWindowCompositionAttribute)(
-    HWND hwnd,
-    const WINDOWCOMPOSITIONATTRIBDATA* pwcad
-);
-
-bool Schedule::enableSetWindowCompositionAttribute(QWidget *w){
-    HWND hwnd = reinterpret_cast<HWND>(w->winId());
-    HMODULE hUser32 = GetModuleHandleW(L"user32.dll");
-    if (!hUser32) {
-        return 0;
-    }
-    auto SetWindowCompositionAttribute = reinterpret_cast<pfnSetWindowCompositionAttribute>(GetProcAddress(hUser32,"SetWindowCompositionAttribute"));
-    if(!SetWindowCompositionAttribute){
-        return 0;
-    }
-
-    ACCENT_POLICY ac;
-    ac.AnimationId = 0;
-    ac.AccentState = ACCENT_ENABLE_ACRYLICBLURBEHIND;
-    ac.AccentFlags = 0x20 | 0x40 | 0x80 | 0x100;
-    ac.GradientColor = 0x20202020;
-
-    WINDOWCOMPOSITIONATTRIBDATA wcd;
-    wcd.Attrib=WCA_ACCENT_POLICY;
-    wcd.cbData=sizeof(ac);
-    wcd.pvData=&ac;
-
-    return SetWindowCompositionAttribute(hwnd,&wcd);
-}
-
-bool Schedule::enableBlurBehindWindow() {
-    HWND hwnd = reinterpret_cast<HWND>(this->winId());
-    if (!hwnd) return false;
-
-    DWM_BLURBEHIND blurBehind = {0,0,0,0};
-    blurBehind.dwFlags = DWM_BB_ENABLE;
-    blurBehind.fEnable = true;
-    blurBehind.hRgnBlur = NULL;
-
-    HRESULT hr = DwmEnableBlurBehindWindow(hwnd, &blurBehind);
-    return SUCCEEDED(hr);
-}
+using namespace SystemAPI;
 
 void Schedule::initPosition(){
     QScreen *primaryScreen = QGuiApplication::primaryScreen();
@@ -151,28 +84,6 @@ void Schedule::setBackground(){
     BluredWallPaper.fill(Qt::transparent);
     QPainter p(&BluredWallPaper);
     sc.render(&p);
-}
-
-//path格式为/xxx/xxx
-QString Schedule::readFile(QString path){
-    QFile file(QCoreApplication::applicationDirPath()+path);
-    file.open(QIODevice::ReadOnly | QIODevice::Text);
-    QTextStream out(&file);
-    QString content = out.readAll();
-    file.close();
-    return content;
-}
-
-void Schedule::writeFile(QString path,QString content){
-    QFile file(QCoreApplication::applicationDirPath()+path);
-    file.open(QIODevice::WriteOnly | QIODevice::Text);
-    QTextStream out(&file);
-    out<<content;
-    file.close();
-}
-
-bool Schedule::is_exist(QString path){
-    return QFile::exists(QCoreApplication::applicationDirPath()+path);
 }
 
 void Schedule::setSystemTrayIcon(){
@@ -338,7 +249,7 @@ void Schedule::setLabelText(QLabel *l,QString content){
 
 //读取逻辑：先读取current文件夹有就用没有读std
 void Schedule::setLabel(QLabel *l,int today){
-    QString week = QString::number(MainWindow::goodDay());
+    QString week = QString::number(Clock::goodDay());
     QString day = QString::number(today);
     QString path1 = QCoreApplication::applicationDirPath()+"/config/current"+week+"/"+day;
     QString path2 = QCoreApplication::applicationDirPath()+"/config/"+week+"/"+day;
@@ -356,13 +267,14 @@ void Schedule::setLabel(QLabel *l,int today){
             file2.close();
         }
     }
+
     if(content.contains('/')){
         QStringList sl=content.split('/');
-        if(MainWindow::weekNow()%2==0){
+        if(Clock::weekNow()%2==0){
             if(inited){
                 setLabelText(l,sl[1]);
             }else{
-              l->setText(sl[1]);
+                l->setText(sl[1]);
             }
         }else{
             if(inited){
@@ -436,7 +348,7 @@ void Schedule::weekEnd(){
 
 void Schedule::updateLabel(){
     if(!ui) return;
-    int day=MainWindow::goodDay();
+    int day=Clock::goodDay();
 
     QLabel* c[8]={ui->C1,ui->C2,ui->C3,ui->C4,ui->C5,ui->C6,ui->C7,ui->C8};
 
@@ -488,9 +400,9 @@ Schedule::Schedule(QWidget *parent)
 
     if(CURRENT_BLUR_SETTING==1){
         if(QOperatingSystemVersion::current()>=QOperatingSystemVersion::Windows10){
-            enableSetWindowCompositionAttribute(this);
+            SystemAPI::setWindowCompositionAttribute(this);
         }else{
-            enableBlurBehindWindow();
+            SystemAPI::enableBlurBehindWindow(this);
         }
     }else if(CURRENT_BLUR_SETTING==2){
         setBackground();
@@ -499,24 +411,26 @@ Schedule::Schedule(QWidget *parent)
         timer_update_background->start(30000);
     }
 
-    anim = new QPropertyAnimation(e,"opacity");
-    anim->setDuration(1000);
-    anim->setStartValue(0.0);
-    anim->setEndValue(1.0);
-
-    anim2 = new QPropertyAnimation(e,"opacity");
-    anim2->setDuration(1000);
-    anim2->setStartValue(1.0);
-    anim2->setEndValue(0.0);
-
     //关闭按钮
     closeB = new QPushButton("×",this);
     closeB->setFocusPolicy(Qt::NoFocus);
     closeB->setStyleSheet("QPushButton:hover{background:qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #FF8E55, stop:1 #FF4526);border-radius:4px;border:none} QPushButton{background:none;border:none}");
-    closeB->setGraphicsEffect(e);
-    e->setOpacity(0.0);
     closeB->setFixedSize(30,30);
     connect(closeB,&QPushButton::clicked,this,&QWidget::close);
+
+    e=new QGraphicsOpacityEffect(closeB);
+
+    anim = new QPropertyAnimation(e,"opacity",closeB);
+    anim->setDuration(1000);
+    anim->setStartValue(0.0);
+    anim->setEndValue(1.0);
+
+    anim2 = new QPropertyAnimation(e,"opacity",closeB);
+    anim2->setDuration(1000);
+    anim2->setStartValue(1.0);
+    anim2->setEndValue(0.0);
+    closeB->setGraphicsEffect(e);
+    e->setOpacity(0.0);
 
     //右键菜单
     setContextMenuPolicy(Qt::CustomContextMenu);
@@ -544,13 +458,11 @@ void Schedule::createContextMenu()
     contextMenu = new QMenu(this);
     QAction *action1 = contextMenu->addAction("打开设置");
     QAction *action2 = contextMenu->addAction("刷新");
-    //QAction *action3 = contextMenu->addAction("换课");
     contextMenu->addSeparator();
-    QAction *action4 = contextMenu->addAction("退出");
+    QAction *action3 = contextMenu->addAction("退出");
     connect(action1, &QAction::triggered, this, &Schedule::onMainWindow);
     connect(action2, &QAction::triggered, this, &Schedule::onUpdate);
-    //connect(action3, &QAction::triggered, this, &Schedule::swapClass);
-    connect(action4, &QAction::triggered, this, &Schedule::onQuit);
+    connect(action3, &QAction::triggered, this, &Schedule::onQuit);
 }
 
 void Schedule::showContextMenu(const QPoint &pos)
@@ -575,43 +487,8 @@ void Schedule::onMainWindow(){
     m_mainwindow->activateWindow();
 }
 
-void Schedule::swapClass(){
-    // SwapClassDialog dialog(this,MainWindow::goodDay(),MainWindow::goodDay());
-    // if(dialog.exec()==QDialog::Accepted){
-    //     SwapClassData data = dialog.getData();
-    //     QString std1 = "/config/"+QString::number(data.day1)+"/"+QString::number(data.classN1);
-    //     QString std2 = "/config/"+QString::number(data.day2)+"/"+QString::number(data.classN2);
-    //     QString current1 = "/config/current"+QString::number(data.day1)+"/"+QString::number(data.classN1);
-    //     QString current2 = "/config/current"+QString::number(data.day2)+"/"+QString::number(data.classN2);
-    //     bool e11=is_exist(std1);
-    //     bool e12=is_exist(std2);
-    //     bool e21=is_exist(current1);
-    //     bool e22=is_exist(current2);
-
-    //     if(e21&&e22){
-    //         QString c1 = readFile(current1);
-    //         QString c2 = readFile(current2);
-    //         writeFile(current1,c2);
-    //         writeFile(current2,c1);
-    //     }else{
-    //         if(e11&&e12){
-    //             QString c1 = readFile(std1);
-    //             QString c2 = readFile(std2);
-    //             writeFile(current1,c2);
-    //             writeFile(current2,c1);
-    //         }else{
-    //             QMessageBox::critical(this,"错误","要调换的两节课未设置，无法换课");
-    //         }
-    //     }
-
-    //     m_mainwindow->recordCurrentScheduleWeek();
-    //     updateLabel();
-    // }
-
-    QMessageBox::information(this,"哦不不不","由于该功能逻辑混乱，暂时删除……");
-}
-
 void Schedule::closeEvent(QCloseEvent *event){
+    Clock::recordLatestTime();
     qApp->quit();
     event->accept();
 }

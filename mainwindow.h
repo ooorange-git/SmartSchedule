@@ -19,15 +19,14 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    static int goodDay();
-    static int weekNow();
-    void restart();
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
     void showWeek();
     void setScheduleWindow(Schedule *s){ m_s=s;};
     QLocalServer *socket = nullptr;
     int recordCurrentScheduleWeek(int changeWeek=0);
+    void restart();
+
 
 private slots:
     void setSchedule(const QString &text);
@@ -45,9 +44,6 @@ private slots:
     void on_pushButton_4_clicked();
 
 private:
-    QString readFile(QString path,bool *ok);
-    bool writeFile(QString path,QString content);
-    bool is_exist(QString path);
     void turnOn(bool is);
     void setCurrentLineEdit(QLineEdit *l);
     int currentScheduleWeekChange();
@@ -58,6 +54,7 @@ private:
     Schedule *m_s = nullptr;
     Ui::MainWindow *ui;
     bool inited = 0;
+    bool is_cleaning=0;
 };
 
 

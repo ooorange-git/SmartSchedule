@@ -27,7 +27,7 @@
    <string>Form</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="icon.qrc">
+   <iconset resource="res.qrc">
     <normaloff>:/icon/logo.ico</normaloff>:/icon/logo.ico</iconset>
   </property>
   <property name="windowOpacity">
@@ -317,7 +317,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="icon.qrc"/>
+  <include location="res.qrc"/>
  </resources>
  <connections/>
 </ui>

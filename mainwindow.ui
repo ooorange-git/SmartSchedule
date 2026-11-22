@@ -14,7 +14,7 @@
    <string>设置</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="icon.qrc">
+   <iconset resource="res.qrc">
     <normaloff>:/icon/icon1.png</normaloff>:/icon/icon1.png</iconset>
   </property>
   <property name="styleSheet">
@@ -1963,7 +1963,7 @@
   <tabstop>L58_2</tabstop>
  </tabstops>
  <resources>
-  <include location="icon.qrc"/>
+  <include location="res.qrc"/>
  </resources>
  <connections/>
 </ui>

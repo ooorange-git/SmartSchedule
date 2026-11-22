@@ -3,7 +3,6 @@
 
 #include "qpropertyanimation.h"
 #include "qpushbutton.h"
-#include "swapclassdialog.h"
 #include <QWidget>
 #include <QAction>
 #include <QMenu>
@@ -31,10 +30,7 @@ public:
     void weekday();
     void weekEnd();
     void showAll();
-    void startDailyTimer();
     void setMainWindow(MainWindow *w){ m_mainwindow=w; };
-    static bool enableSetWindowCompositionAttribute(QWidget *w);
-    bool enableBlurBehindWindow();
     void usePhy();
     int CURRENT_BLUR_SETTING = 0;
 
@@ -53,9 +49,6 @@ protected:
     void resizeEvent(QResizeEvent *event) override;
 
 private:
-    QString readFile(QString path);
-    void writeFile(QString path,QString content);
-    bool is_exist(QString path);
     Ui::Schedule *ui;
     QPoint m_dragP;
     bool m_bDragging;
@@ -64,14 +57,11 @@ private:
     void createContextMenu();
     MainWindow *m_mainwindow=nullptr;
     QPushButton *closeB=nullptr;
-    QGraphicsOpacityEffect *e = new QGraphicsOpacityEffect(closeB);
+    QGraphicsOpacityEffect *e = nullptr;
     QPropertyAnimation *anim = nullptr;
     QPropertyAnimation *anim2 = nullptr;
     bool m_pressing=0;
     QPoint firstPos;
-    void setShadow();
-    void recordWindowSize();
-    void SetWindowSize();
     QPixmap BluredWallPaper;
     QPixmap noise;
     void setBackground();
@@ -83,7 +73,6 @@ private:
     void setSystemTrayIcon();
     void setLabel(QLabel *l,int today);
     void setLabelText(QLabel *l,QString content);
-    void swapClass();
     Physics *p = nullptr;
     bool inited=0;
 };
